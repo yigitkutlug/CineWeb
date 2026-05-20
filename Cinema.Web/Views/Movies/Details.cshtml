@@ -1,0 +1,493 @@
+@* Film detay + DB'den gelen seans seçimi ekranı. Koltuk seçimi bir sonraki sayfada yapılır. *@
+@model Cinema.Web.ViewModels.MovieDetailsPageVm
+@{
+    ViewData["Title"] = Model.Details.Movie.Title;
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var isAdminUser = User.IsInRole("Admin") || User.IsInRole("SuperAdmin");
+}
+
+<style>
+    .movie-detail-page {
+        max-width: 1150px;
+        margin-inline: auto;
+        color: #edf2ff;
+    }
+    .movie-detail-hero {
+        display: grid;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 1rem;
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 12% 15%, rgba(212,162,76,.14), transparent 38%),
+            radial-gradient(circle at 86% 18%, rgba(91,118,255,.14), transparent 36%),
+            linear-gradient(145deg, rgba(12,15,22,.92), rgba(16,22,33,.86));
+        box-shadow: 0 20px 46px rgba(0,0,0,.22);
+        padding: 1.15rem;
+    }
+    .movie-poster-xl {
+        border-radius: 18px;
+        min-height: 340px;
+        border: 1px solid rgba(255,255,255,.07);
+        background:
+            radial-gradient(circle at 18% 18%, rgba(212,162,76,.22), transparent 42%),
+            radial-gradient(circle at 78% 20%, rgba(91,118,255,.2), transparent 40%),
+            linear-gradient(140deg, #222b3f, #141a27);
+        position: relative;
+        overflow: hidden;
+    }
+    .movie-poster-xl img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .movie-poster-xl::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,.01) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.01) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: .4;
+        pointer-events: none;
+    }
+    .movie-poster-title {
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 1;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #f8fbff;
+        text-shadow: 0 2px 10px rgba(0,0,0,.35);
+    }
+    .movie-info { display: grid; gap: .9rem; align-content: start; }
+    .movie-info h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.5rem); font-weight: 800; letter-spacing: -.02em; }
+    .movie-chip-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .movie-chip {
+        border-radius: 999px; border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.03); color: #dce3f5;
+        padding: .35rem .7rem; font-size: .85rem; font-weight: 600;
+    }
+    .movie-chip.featured { color: #f7dfa8; border-color: rgba(212,162,76,.28); background: rgba(212,162,76,.10); }
+    .movie-summary { color: #c6cfe4; line-height: 1.65; margin: 0; }
+    .session-panel, .about-panel {
+        border-radius: 18px; border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03); padding: 1rem; margin-top: 1rem;
+    }
+    .session-panel h2, .about-panel h2 { margin: 0 0 .75rem; font-size: 1.05rem; font-weight: 800; }
+    .session-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .75rem; }
+    .session-card {
+        border-radius: 14px; border: 1px solid rgba(255,255,255,.08);
+        background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+        padding: .85rem;
+    }
+    .session-card strong { display: block; margin-bottom: .25rem; color: #f2f6ff; }
+    .session-card p { margin: 0 0 .65rem; color: #bac4dc; font-size: .9rem; }
+    .buy-btn {
+        width: 100%; border: 0; border-radius: 12px; padding: .65rem .75rem;
+        color: #1c1307; font-weight: 700;
+        background: linear-gradient(135deg, #d4a24c, #e8c37b);
+        box-shadow: 0 10px 20px rgba(212,162,76,.18);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .ghost-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 12px; padding: .65rem .85rem; text-decoration: none;
+        color: #edf2ff; border: 1px solid rgba(255,255,255,.12);
+        background: rgba(255,255,255,.02); font-weight: 600;
+    }
+    .ghost-btn:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .review-summary { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .review-stars { color: #f0c674; letter-spacing: 2px; font-size: .95rem; }
+    .review-list { display: grid; gap: .75rem; }
+    .review-card {
+        border-radius: 14px; border: 1px solid rgba(255,255,255,.08);
+        background: rgba(15,20,30,.65); padding: .85rem;
+    }
+    .review-head { display: flex; justify-content: space-between; gap: 1rem; }
+    .review-name { font-weight: 700; color: #eef2ff; }
+    .review-rating { color: #f0c674; font-weight: 700; }
+    .review-date { color: #9aa6c1; font-size: .85rem; }
+    .review-actions { display: flex; align-items: center; gap: .6rem; margin-top: .35rem; }
+    .like-btn {
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(255,255,255,.03);
+        color: #edf2ff;
+        padding: .2rem .55rem;
+        font-size: .85rem;
+    }
+    .like-btn.liked {
+        border-color: rgba(212,162,76,.4);
+        background: rgba(212,162,76,.12);
+        color: #f7dfa8;
+    }
+    .reply-list { margin-top: .6rem; display: grid; gap: .5rem; }
+    .reply-card {
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(255,255,255,.02);
+        padding: .6rem .7rem;
+    }
+    .reply-meta { color: #9aa6c1; font-size: .8rem; }
+    .reply-form textarea { min-height: 80px; }
+    .session-panel .form-control,
+    .session-panel .form-select {
+        background: rgba(18, 24, 36, 0.9);
+        color: #eef2ff;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 12px;
+    }
+    .session-panel .form-control::placeholder {
+        color: #9aa6c1;
+    }
+    .session-panel .form-control:focus,
+    .session-panel .form-select:focus {
+        background: rgba(22, 30, 45, 0.95);
+        border-color: rgba(212,162,76,.45);
+        box-shadow: 0 0 0 .2rem rgba(212,162,76,.15);
+        color: #fff;
+    }
+    .reply-form textarea.form-control {
+        background: rgba(15, 20, 30, .9);
+    }
+    @@media (max-width: 991px) {
+        .movie-detail-hero { grid-template-columns: 1fr; }
+        .session-grid { grid-template-columns: 1fr; }
+        .movie-poster-xl { min-height: 260px; }
+    }
+</style>
+
+<section class="movie-detail-page">
+    <div class="movie-detail-hero">
+        <div class="movie-poster-xl">
+            @if (!string.IsNullOrWhiteSpace(Model.Details.Movie.PosterImagePath))
+            {
+                <img src="@Model.Details.Movie.PosterImagePath" alt="@Model.Details.Movie.Title afişi" />
+            }
+            <div class="movie-poster-title">@Model.Details.Movie.Title</div>
+        </div>
+
+        <div class="movie-info">
+            <a class="ghost-btn" asp-controller="Movies" asp-action="Index">&larr; Filmlere Dön</a>
+
+            <h1>@Model.Details.Movie.Title</h1>
+
+            <div class="movie-chip-row">
+                <span class="movie-chip">@(string.IsNullOrWhiteSpace(Model.Details.Movie.Genre) ? "Tür yok" : Model.Details.Movie.Genre)</span>
+                <span class="movie-chip">@Model.Details.Movie.DurationMinutes dk</span>
+                @if (Model.Details.Movie.IsFeatured)
+                {
+                    <span class="movie-chip featured">Öne Çıkan Film</span>
+                }
+            </div>
+
+            <p class="movie-summary">
+                @(string.IsNullOrWhiteSpace(Model.Details.Movie.Description)
+                    ? "Film detay sayfasında seans ve koltuk seçim akışı aktif. Seans seçip müsait koltuğu seçerek satın alma işlemini tamamlayabilirsin."
+                    : Model.Details.Movie.Description)
+            </p>
+
+            <div class="about-panel">
+                <h2>Film Bilgisi</h2>
+                <p class="mb-2 text-secondary">Kategori: <strong class="text-light">@(string.IsNullOrWhiteSpace(Model.Details.Movie.Genre) ? "Belirtilmedi" : Model.Details.Movie.Genre)</strong></p>
+                <p class="mb-2 text-secondary">Süre: <strong class="text-light">@Model.Details.Movie.DurationMinutes dakika</strong></p>
+                <p class="mb-2 text-secondary">
+                    Puan:
+                    @if (Model.ReviewSummary.ApprovedReviewCount == 0)
+                    {
+                        <strong class="text-light">Henüz puan yok</strong>
+                    }
+                    else
+                    {
+                        var filled = (int)Math.Round(Model.ReviewSummary.AverageRating, MidpointRounding.AwayFromZero);
+                        <span class="review-summary">
+                            <span class="review-stars">@($"{new string('★', filled)}{new string('☆', 5 - filled)}")</span>
+                            <strong class="text-light">@Model.ReviewSummary.AverageRating.ToString("0.0") / 5</strong>
+                            <span class="text-secondary">(@Model.ReviewSummary.ApprovedReviewCount yorum)</span>
+                        </span>
+                    }
+                </p>
+                <p class="mb-2 text-secondary">
+                    Oyuncular:
+                    <strong class="text-light">
+                        @(Model.Details.Movie.MovieActors.Any()
+                            ? string.Join(", ", Model.Details.Movie.MovieActors.Where(x => x.Actor != null).Select(x => x.Actor!.FullName))
+                            : "Henüz eklenmedi")
+                    </strong>
+                </p>
+                <p class="mb-0 text-secondary">Durum: <strong class="text-light">@(Model.Details.Movie.IsFeatured ? "Vitrinde / Öne Çıkan" : "Vizyonda")</strong></p>
+            </div>
+        </div>
+    </div>
+
+    @* Seans listesi: sadece aktif ve gelecekteki seanslar *@
+    <div class="session-panel">
+        <h2>Seans Seç ve Koltuk Al</h2>
+
+        @if (!Model.Details.Showtimes.Any())
+        {
+            <div class="text-secondary">Bu filme ait aktif seans bulunmuyor. Admin panelden seans eklemelisin.</div>
+        }
+        else
+        {
+            <div class="session-grid">
+                @foreach (var showtime in Model.Details.Showtimes)
+                {
+                    <div class="session-card">
+                        <strong>@DateTime.SpecifyKind(showtime.StartsAt, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")</strong>
+                        <p>@(showtime.Hall?.Name ?? "Salon") - Koltuk seçimli satın alma - @showtime.Price.ToString("0.00") TL</p>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a class="buy-btn" asp-controller="Movies" asp-action="Seats" asp-route-showtimeId="@showtime.Id">
+                                Koltuk Seç ve Bilet Al
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="buy-btn"
+                               asp-area="Identity" asp-page="/Account/Login"
+                               asp-route-returnUrl="@Url.Action("Seats", "Movies", new { area = "", showtimeId = showtime.Id })">
+                                Giriş Yap ve Koltuk Seç
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="session-panel" id="reviews">
+        <h2>Film Yorumları ve Puanlama</h2>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form method="post" asp-action="Review" asp-route-id="@Model.Details.Movie.Id" class="admin-form">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="alert alert-danger validation-summary-valid py-2"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label admin-form-label">Puan (1-5)</label>
+                        <select asp-for="ReviewForm.Rating" class="form-select">
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9">
+                        <label class="form-label admin-form-label">Yorum</label>
+                        <textarea asp-for="ReviewForm.Comment" class="form-control" rows="3" placeholder="Film hakkındaki yorumun..."></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-warning">Yorumu Gönder</button>
+                    @if (Model.MyReview != null)
+                    {
+                        <span class="text-secondary align-self-center">Mevcut yorumun güncellenecek ve onaya düşecek.</span>
+                    }
+                </div>
+            </form>
+        }
+        else
+        {
+            <p class="text-secondary mb-0">
+                Yorum yapabilmek için giriş yapmalısın.
+                <a class="ghost-btn" asp-area="Identity" asp-page="/Account/Login"
+                   asp-route-returnUrl="@Url.Action("Details", "Movies", new { area = "", id = Model.Details.Movie.Id })">Giriş Yap</a>
+            </p>
+        }
+
+        <hr class="my-4" />
+
+        @if (TempData["ReviewError"] is string reviewError)
+        {
+            <div class="alert alert-danger py-2">@reviewError</div>
+        }
+
+        @if (!Model.Reviews.Any())
+        {
+            <div class="text-secondary">Henüz onaylanmış yorum yok.</div>
+        }
+        else
+        {
+            <div class="review-list">
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="review-card">
+                        <div class="review-head">
+                            <span class="review-name">@review.DisplayName</span>
+                            <span class="review-rating">@review.Rating / 5</span>
+                        </div>
+                        <p class="mb-2 text-secondary">@(string.IsNullOrWhiteSpace(review.Comment) ? "-" : review.Comment)</p>
+                        <div class="review-date">@review.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</div>
+
+                        <div class="review-actions">
+                            @{
+                                var likerTitle = review.LikerNames.Any() ? string.Join(", ", review.LikerNames) : "";
+                            }
+                            <span class="text-secondary like-count" data-review-id="@review.Id" title="@likerTitle">@review.LikeCount begeni</span>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <form method="post" class="js-like-form" asp-action="Like" asp-route-reviewId="@review.Id" asp-route-movieId="@Model.Details.Movie.Id">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="like-btn @(review.IsLikedByCurrentUser ? "liked" : "")" data-review-id="@review.Id">
+                                        @(review.IsLikedByCurrentUser ? "Begenildi" : "Begen")
+                                    </button>
+                                </form>
+                            }
+                        </div>
+
+                        @if (review.Replies.Any())
+                        {
+                            <div class="reply-list">
+                                @foreach (var reply in review.Replies)
+                                {
+                                    <div class="reply-card">
+                                        <div class="review-head">
+                                            <span class="review-name">@reply.DisplayName</span>
+                                            <span class="review-date">@reply.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-start gap-2 mt-1">
+                                            <div class="text-secondary">@reply.Comment</div>
+                                            @if (User.Identity?.IsAuthenticated == true && (isAdminUser || reply.UserId == currentUserId))
+                                            {
+                                                <form method="post" asp-action="DeleteReply" asp-route-replyId="@reply.Id" asp-route-movieId="@Model.Details.Movie.Id"
+                                                      onsubmit="return confirm('Bu yaniti silmek istiyor musunuz?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form method="post"
+                                  class="reply-form mt-2 js-reply-form"
+                                  data-review-id="@review.Id"
+                                  data-movie-id="@Model.Details.Movie.Id"
+                                  data-ajax-url="@Url.Action("ReplyAjax", "Movies")"
+                                  asp-action="Reply" asp-route-reviewId="@review.Id" asp-route-movieId="@Model.Details.Movie.Id">
+                                @Html.AntiForgeryToken()
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <textarea name="comment" class="form-control" rows="2" placeholder="Yanıt yaz..."></textarea>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-sm btn-outline-light">Yanıtla</button>
+                                    </div>
+                                </div>
+                                <div class="text-secondary small mt-1 d-none reply-pending">Yanit onaya gonderildi.</div>
+                                <div class="text-danger small mt-1 d-none reply-error">Yanit gonderilemedi.</div>
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var likeForms = document.querySelectorAll('.js-like-form');
+            likeForms.forEach(function (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var btn = form.querySelector('button[data-review-id]');
+                    var reviewId = btn ? btn.getAttribute('data-review-id') : null;
+                    if (!reviewId) return;
+
+                    var token = form.querySelector('input[name="__RequestVerificationToken"]');
+                    var data = new FormData();
+                    data.append('reviewId', reviewId);
+                    if (token) data.append('__RequestVerificationToken', token.value);
+
+                    fetch('@Url.Action("LikeAjax", "Movies")', { method: 'POST', body: data, credentials: 'same-origin' })
+                        .then(function (r) { return r.json(); })
+                        .then(function (json) {
+                            if (!json || !json.ok) return;
+                            var countEl = document.querySelector('.like-count[data-review-id="' + reviewId + '"]');
+                            if (countEl && typeof json.likeCount !== 'undefined') {
+                                countEl.textContent = json.likeCount + ' begeni';
+                                if (json.likerNames) countEl.title = json.likerNames.join(', ');
+                            }
+                            if (btn && typeof json.isLiked !== 'undefined') {
+                                if (json.isLiked) {
+                                    btn.classList.add('liked');
+                                    btn.textContent = 'Begenildi';
+                                } else {
+                                    btn.classList.remove('liked');
+                                    btn.textContent = 'Begen';
+                                }
+                            }
+                        });
+                });
+            });
+
+            var replyForms = document.querySelectorAll('.js-reply-form');
+            replyForms.forEach(function (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var token = form.querySelector('input[name="__RequestVerificationToken"]');
+                    var textarea = form.querySelector('textarea[name="comment"]');
+                    var reviewId = form.getAttribute('data-review-id');
+                    var movieId = form.getAttribute('data-movie-id');
+                    var ajaxUrl = form.getAttribute('data-ajax-url');
+                    if (!textarea) return;
+                    var data = new FormData(form);
+                    if (token) data.append('__RequestVerificationToken', token.value);
+                    if (reviewId) data.append('reviewId', reviewId);
+                    if (movieId) data.append('movieId', movieId);
+
+                    var errorEl = form.querySelector('.reply-error');
+                    if (errorEl) errorEl.classList.add('d-none');
+
+                    fetch(ajaxUrl || '@Url.Action("ReplyAjax", "Movies")', { method: 'POST', body: data, credentials: 'same-origin' })
+                        .then(function (r) {
+                            if (!r.ok) {
+                                return r.text().then(function (t) {
+                                    try { return JSON.parse(t); } catch { throw { error: t || 'Hata' }; }
+                                }).then(function (j) { throw j; });
+                            }
+                            return r.json();
+                        })
+                        .then(function (json) {
+                            if (!json || !json.ok) return;
+                            textarea.value = '';
+                            var pending = form.querySelector('.reply-pending');
+                            if (pending) {
+                                pending.classList.remove('d-none');
+                                setTimeout(function () { pending.classList.add('d-none'); }, 2500);
+                            }
+                        })
+                        .catch(function (err) {
+                            if (errorEl) {
+                                var msg = (err && err.error) ? err.error : 'Yanit gonderilemedi.';
+                                errorEl.textContent = msg;
+                                errorEl.classList.remove('d-none');
+                            }
+                        });
+                });
+            });
+        })();
+    </script>
+}
+

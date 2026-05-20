@@ -1,0 +1,120 @@
+@* Satin alma basarili ozeti: tempdata ile gelen bilgiler gosterilir *@
+@model Cinema.Application.Movies.TicketPurchaseSuccessDto
+@{
+    ViewData["Title"] = "Teşekkürler";
+}
+
+<style>
+    .purchase-success-shell {
+        max-width: 860px;
+        margin-inline: auto;
+        color: #edf2ff;
+    }
+    .purchase-success-card {
+        border-radius: 24px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 12% 15%, rgba(212,162,76,.14), transparent 38%),
+            radial-gradient(circle at 86% 18%, rgba(91,118,255,.14), transparent 36%),
+            linear-gradient(145deg, rgba(12,15,22,.92), rgba(16,22,33,.86));
+        box-shadow: 0 20px 46px rgba(0,0,0,.22);
+        padding: 1.5rem;
+    }
+    .purchase-success-card h1 {
+        margin: 0 0 .35rem;
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        font-weight: 800;
+    }
+    .purchase-success-card p {
+        color: #c9d2e7;
+    }
+    .purchase-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .9rem;
+        margin: 1.25rem 0;
+    }
+    .purchase-summary-item {
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03);
+        padding: .9rem 1rem;
+    }
+    .purchase-summary-item small {
+        display: block;
+        color: #9ca8c5;
+        margin-bottom: .25rem;
+    }
+    .purchase-summary-item strong {
+        color: #f7fbff;
+        font-size: 1rem;
+    }
+    .purchase-seat-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        margin-top: .35rem;
+    }
+    .purchase-seat-chip {
+        border-radius: 999px;
+        padding: .35rem .75rem;
+        background: rgba(212,162,76,.14);
+        border: 1px solid rgba(212,162,76,.28);
+        color: #ffe1a5;
+        font-weight: 700;
+    }
+    .purchase-actions {
+        display: flex;
+        gap: .75rem;
+        margin-top: 1.25rem;
+    }
+    @@media (max-width: 767px) {
+        .purchase-summary-grid {
+            grid-template-columns: 1fr;
+        }
+        .purchase-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="purchase-success-shell">
+    <div class="purchase-success-card">
+        <h1>Teşekkürler</h1>
+        <p>Bilet satın alma işlemin tamamlandı. Aşağıda seans özeti var.</p>
+
+        <div class="purchase-summary-grid">
+            <div class="purchase-summary-item">
+                <small>Film</small>
+                <strong>@Model.MovieTitle</strong>
+            </div>
+            <div class="purchase-summary-item">
+                <small>Salon</small>
+                <strong>@Model.HallName</strong>
+            </div>
+            <div class="purchase-summary-item">
+                <small>Seans</small>
+                <strong>@Model.SessionAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</strong>
+            </div>
+            <div class="purchase-summary-item">
+                <small>Toplam Tutar</small>
+                <strong>@Model.TotalPrice.ToString("0.00") TL</strong>
+            </div>
+        </div>
+
+        <div class="purchase-summary-item">
+            <small>Koltuklar</small>
+            <div class="purchase-seat-list">
+                @foreach (var seatNo in Model.SeatNumbers)
+                {
+                    <span class="purchase-seat-chip">@seatNo</span>
+                }
+            </div>
+        </div>
+
+        <div class="purchase-actions">
+            <a class="btn btn-warning" asp-controller="Profile" asp-action="Tickets">Biletini Gör</a>
+            <a class="btn btn-outline-light" asp-controller="Movies" asp-action="Index">Filmlere Dön</a>
+        </div>
+    </div>
+</section>

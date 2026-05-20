@@ -1,0 +1,153 @@
+@* Tek filme ait veya tum seanslarin listesi. Buradan seans CRUD yapilir. *@
+@model Cinema.Web.Areas.Admin.ViewModels.ShowtimesIndexVm
+@{
+    var movie = Model.Movie;
+    var isAllShowtimes = Model.IsAllShowtimes;
+    ViewData["Title"] = isAllShowtimes ? "Tüm Seanslar" : $"Seanslar - {movie!.Title}";
+}
+
+@if (isAllShowtimes)
+{
+    <div class="admin-panel mb-3">
+        <div class="admin-panel-header">
+            <div>
+                <h2>Seninle Seans Oluştur</h2>
+                <div class="text-secondary">Film, salon, saat ve fiyat secip direkt bu ekrandan yeni seans ekle.</div>
+            </div>
+        </div>
+        <div class="admin-panel-body">
+            <form method="post" asp-area="Admin" asp-controller="Showtimes" asp-action="CreateFromIndex" class="admin-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="QuickCreateForm.ReturnToAllShowtimes" />
+
+                <div class="row g-3">
+                    <div class="col-lg-3">
+                        <label asp-for="QuickCreateForm.MovieId" class="form-label admin-form-label">Film</label>
+                        <select asp-for="QuickCreateForm.MovieId" asp-items="Model.QuickCreateForm.MovieOptions" class="form-select"></select>
+                        <span asp-validation-for="QuickCreateForm.MovieId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-lg-3">
+                        <label asp-for="QuickCreateForm.HallId" class="form-label admin-form-label">Salon</label>
+                        <select asp-for="QuickCreateForm.HallId" asp-items="Model.QuickCreateForm.HallOptions" class="form-select"></select>
+                        <span asp-validation-for="QuickCreateForm.HallId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-lg-3">
+                        <label asp-for="QuickCreateForm.StartsAt" class="form-label admin-form-label">Baslangic</label>
+                        <input asp-for="QuickCreateForm.StartsAt" type="datetime-local" class="form-control"
+                               value="@Model.QuickCreateForm.StartsAt.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="QuickCreateForm.StartsAt" class="text-danger small"></span>
+                    </div>
+                    <div class="col-lg-2">
+                        <label asp-for="QuickCreateForm.Price" class="form-label admin-form-label">Fiyat</label>
+                        <input asp-for="QuickCreateForm.Price" class="form-control" type="number" step="0.01" min="0" />
+                        <span asp-validation-for="QuickCreateForm.Price" class="text-danger small"></span>
+                    </div>
+                    <div class="col-lg-1 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" asp-for="QuickCreateForm.IsActive" />
+                            <label class="form-check-label" asp-for="QuickCreateForm.IsActive">Aktif</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-warning">Seans Olustur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Seanslar</h2>
+            <div class="text-secondary">@(isAllShowtimes ? "Tum filmlerin seanslari" : movie!.Title)</div>
+        </div>
+        <div class="d-flex gap-2">
+            @if (isAllShowtimes)
+            {
+                <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Movies" asp-action="Index">Filmlere Git</a>
+            }
+            else
+            {
+                <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Movies" asp-action="Edit" asp-route-id="@movie!.Id">Filme Dön</a>
+                <a class="btn btn-sm btn-warning" asp-area="Admin" asp-controller="Showtimes" asp-action="Create" asp-route-movieId="@movie.Id">Yeni Seans Ekle</a>
+            }
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Items.Any())
+        {
+            <div class="admin-empty">@(isAllShowtimes ? "Henuz seans kaydi yok." : "Bu filme ait seans yok.")</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Baslangic</th>
+                            <th>Salon</th>
+                            <th>Fiyat</th>
+                            <th>Durum</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var s in Model.Items)
+                    {
+                        <tr>
+                            <td>@(s.Movie?.Title ?? "-")</td>
+                            <td>@DateTime.SpecifyKind(s.StartsAt, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@(s.Hall?.Name ?? "-")</td>
+                            <td>@s.Price.ToString("0.00") TL</td>
+                            <td>
+                                <span class="badge @(s.IsActive ? "text-bg-success" : "text-bg-secondary")">
+                                    @(s.IsActive ? "Aktif" : "Pasif")
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    @if (isAllShowtimes && s.MovieId > 0)
+                                    {
+                                        <a class="btn btn-sm btn-outline-warning" asp-area="Admin" asp-controller="Showtimes" asp-action="Index" asp-route-movieId="@s.MovieId">Film Seanslari</a>
+                                    }
+                                    <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Showtimes" asp-action="Edit" asp-route-id="@s.Id">Duzenle</a>
+                                    <form method="post" asp-area="Admin" asp-controller="Showtimes" asp-action="Delete" asp-route-id="@s.Id"
+                                          onsubmit="return confirm('Bu seansi silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var hallSelect = document.querySelector('[name="QuickCreateForm.HallId"]');
+            var priceInput = document.querySelector('[name="QuickCreateForm.Price"]');
+            if (!hallSelect || !priceInput) return;
+
+            function applyVipPrice() {
+                var selected = hallSelect.options[hallSelect.selectedIndex];
+                var text = selected ? selected.text.toLowerCase() : '';
+                if (text.includes('vip')) {
+                    priceInput.value = '600';
+                }
+            }
+
+            hallSelect.addEventListener('change', applyVipPrice);
+        })();
+    </script>
+}

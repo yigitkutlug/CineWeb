@@ -1,0 +1,124 @@
+@* Public site ana layout'u: tum public sayfalarin navbar/footer iskeleti *@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema.Web</title>
+    <script type="importmap"></script>
+    <link rel="icon" type="image/png" href="~/media/logopng.png" />
+    <meta property="og:image" content="@Url.Content("~/media/logo.png")" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Cinema.Web.styles.css" asp-append-version="true" />
+</head>
+@{
+    var currentPath = Context?.Request?.Path.Value ?? "";
+    var isIdentityAccountPage = currentPath.StartsWith("/Identity/Account", StringComparison.OrdinalIgnoreCase);
+}
+<body class="@(isIdentityAccountPage ? "identity-theme" : "")">
+    <div class="cinema-bg-orb cinema-bg-orb-1" aria-hidden="true"></div>
+    <div class="cinema-bg-orb cinema-bg-orb-2" aria-hidden="true"></div>
+
+    <header class="cinema-header">
+        <nav class="navbar navbar-expand-lg cinema-nav">
+            <div class="container-xl">
+                <a class="navbar-brand cinema-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img class="brand-logo" src="~/media/logopng.png" alt="Cinema Asya logo" />
+                    <span>Cinema Asya</span>
+                </a>
+
+                <button class="navbar-toggler cinema-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false"
+                        aria-label="Navigasyonu ac/kapat">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 cinema-nav-links">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Movies" asp-action="Index">Filmler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">Hakkımızda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">İletişim</a>
+                        </li>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-accent" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Yönetim Paneli</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="cinema-auth">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-xl">
+        <main role="main" class="cinema-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer id="site-footer" class="cinema-footer">
+        <div class="container-xl">
+            <div class="cinema-footer-grid">
+                <div>
+                    <div class="cinema-footer-brand">
+                        <img class="brand-logo" src="~/media/logopng.png" alt="Cinema Asya logo" />
+                        <span>Cinema Asya</span>
+                    </div>
+                    <p class="cinema-footer-text">
+                        Film keyfini modern salon deneyimiyle birleştiren sinema platformu.
+                    </p>
+                </div>
+
+                <div>
+                    <h6 class="cinema-footer-title">Hızlı Linkler</h6>
+                    <ul class="cinema-footer-list">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                        <li><a asp-area="" asp-controller="Movies" asp-action="Index">Filmler</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">Hakkımızda</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h6 class="cinema-footer-title">Yönetim</h6>
+                    <ul class="cinema-footer-list">
+                        <li><a asp-area="Identity" asp-page="/Account/Login">Giriş Yap</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Register">Kayıt Ol</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h6 class="cinema-footer-title">İletişim</h6>
+                    <p class="cinema-footer-text"><a asp-area="" asp-controller="Home" asp-action="Contact">yigitwuted1@gmail.com</a></p>
+                    <p class="cinema-footer-text"><a asp-area="" asp-controller="Home" asp-action="Contact">Hafta içi 10:00 - 22:00</a></p>
+                </div>
+            </div>
+
+            <div class="cinema-footer-bottom">
+                <span>&copy; @DateTime.Now.Year CinemaSystem</span>
+                <span>Perde açık, seans hazır.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

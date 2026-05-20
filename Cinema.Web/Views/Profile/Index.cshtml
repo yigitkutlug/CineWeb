@@ -1,0 +1,280 @@
+dotnet @* "Profilim" ekranı: kullanıcı kişisel bilgilerini ve fotoğrafını günceller *@
+@model Cinema.Web.ViewModels.ProfileEditVm
+@{
+    ViewData["Title"] = "Profilim";
+    var initials = $"{(Model.FirstName?.FirstOrDefault())}{(Model.LastName?.FirstOrDefault())}".Trim();
+    if (string.IsNullOrWhiteSpace(initials))
+    {
+        initials = (Model.Email?.FirstOrDefault().ToString() ?? "U").ToUpperInvariant();
+    }
+}
+
+<style>
+    .profile-shell { max-width: 1100px; margin-inline: auto; }
+    .profile-grid { display:grid; grid-template-columns: 320px 1fr; gap:1rem; }
+    .profile-card {
+        border-radius: 18px;
+        border:1px solid rgba(255,255,255,.08);
+        background: rgba(16,20,28,.72);
+        box-shadow: 0 14px 34px rgba(0,0,0,.12);
+        padding: 1rem;
+    }
+    .profile-avatar {
+        width: 112px; height:112px; border-radius: 50%;
+        border: 2px solid rgba(212,162,76,.45);
+        display:flex; align-items:center; justify-content:center;
+        font-weight:800; font-size: 2rem;
+        color:#f4efe7;
+        background: radial-gradient(circle at 35% 30%, #d4a24c, #3b2a16 70%);
+        overflow: hidden;
+        margin-bottom: .9rem;
+    }
+    .profile-avatar img { width:100%; height:100%; object-fit:cover; }
+    .profile-muted { color:#667085; }
+    .profile-title { margin:0 0 .75rem; font-size:1.1rem; font-weight:800; }
+    .profile-form label { font-weight:600; }
+    .profile-form .form-control, .profile-form textarea {
+        border-radius: 12px;
+        border-color: #d0d7e2;
+    }
+    .profile-form .form-control:focus, .profile-form textarea:focus {
+        border-color: rgba(212,162,76,.65);
+        box-shadow: 0 0 0 .2rem rgba(212,162,76,.15);
+    }
+    .badge-section { margin-top: 1.25rem; }
+    .badge-grid { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; }
+    .badge-list { display:grid; gap:.6rem; }
+    .badge-card {
+        border-radius: 14px;
+        border:1px solid rgba(255,255,255,.08);
+        background: rgba(16,20,28,.72);
+        padding: .75rem;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .75rem;
+    }
+    .badge-card.locked { opacity: .55; }
+    .badge-meta { color:#95a0b8; font-size: .85rem; }
+    .badge-pill {
+        border-radius: 999px;
+        padding: .2rem .5rem;
+        font-size: .75rem;
+        border: 1px solid rgba(255,255,255,.18);
+        background: rgba(255,255,255,.05);
+    }
+    .badge-left {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+    }
+    .badge-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 2px solid rgba(212,162,76,.55);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size: 1.1rem;
+        background:
+            radial-gradient(circle at 35% 30%, #f5d07a, #7a4b12 72%);
+        color: #1b1205;
+        box-shadow: 0 8px 18px rgba(0,0,0,.18);
+        flex: 0 0 auto;
+    }
+    .badge-card.locked .badge-icon {
+        border-color: rgba(255,255,255,.2);
+        background: radial-gradient(circle at 35% 30%, #9aa3b7, #3a4152 72%);
+        color: #e7ecf7;
+    }
+    @@media (max-width: 991px) {
+        .profile-grid { grid-template-columns: 1fr; }
+        .badge-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="profile-shell">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-1">Profilim</h1>
+            <p class="text-muted mb-0">Kişisel bilgilerini güncelle, profil fotoğrafı yükle.</p>
+        </div>
+        <a class="btn btn-outline-dark" asp-controller="Profile" asp-action="Tickets">Biletlerim</a>
+    </div>
+
+    @if (TempData["ProfileSaved"] is string okMessage)
+    {
+        <div class="alert alert-success">@okMessage</div>
+    }
+
+    <div class="profile-grid">
+        <aside class="profile-card">
+            <div class="profile-avatar">
+                @if (!string.IsNullOrWhiteSpace(Model.ProfilePhotoPath))
+                {
+                    <img src="@Model.ProfilePhotoPath" alt="Profil fotoğrafı" />
+                }
+                else
+                {
+                    <span>@initials</span>
+                }
+            </div>
+
+            <h2 class="h5 mb-1">@(string.IsNullOrWhiteSpace(Model.FirstName + Model.LastName) ? "Kullanıcı" : $"{Model.FirstName} {Model.LastName}".Trim())</h2>
+            <p class="profile-muted mb-2">@Model.Email</p>
+            <p class="profile-muted mb-0">Telefon: @(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "-" : Model.PhoneNumber)</p>
+
+            <hr />
+
+            <div class="d-grid gap-2">
+                <a class="btn btn-dark" asp-controller="Profile" asp-action="Tickets">Bilet Geçmişim</a>
+                <a class="btn btn-outline-secondary" asp-area="Identity" asp-page="/Account/Manage/Index">Hesap Ayarları</a>
+            </div>
+        </aside>
+
+        <section class="profile-card">
+            <h2 class="profile-title">Kişisel Bilgiler</h2>
+
+            <form method="post" enctype="multipart/form-data" class="profile-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="ProfilePhotoPath" />
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger validation-summary-valid py-2"></div>
+                }
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">E-posta</label>
+                        <input asp-for="Email" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label"></label>
+                        <input asp-for="City" class="form-control" />
+                    </div>
+                    <div class="col-md-8">
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Profil Fotoğrafı</label>
+                        <input type="file" name="profilePhoto" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                        <div class="form-text">JPG, PNG veya WEBP yükleyebilirsin.</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-dark">Profili Kaydet</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Ana Sayfaya Dön</a>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <section class="badge-section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Rozetlerim</h2>
+            <span class="text-muted">Kazanilan: @Model.EarnedBadges.Count • Kilitli: @Model.LockedBadges.Count</span>
+        </div>
+
+        <div class="badge-grid">
+            <div class="profile-card">
+                <h3 class="profile-title">Kazanilan Rozetler</h3>
+                @if (!Model.EarnedBadges.Any())
+                {
+                    <div class="profile-muted">Henuz rozet kazanmadin.</div>
+                }
+                else
+                {
+                    <div class="badge-list">
+                        @foreach (var badge in Model.EarnedBadges)
+                        {
+                            var earnedAt = badge.EarnedAtUtc.HasValue
+                                ? DateTime.SpecifyKind(badge.EarnedAtUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy")
+                                : "-";
+                            var icon = badge.Title switch
+                            {
+                                "Ilk Bilet" => "🎟️",
+                                "Yorumcu" => "💬",
+                                "Elestirmen" => "📝",
+                                "Favorici" => "⭐",
+                                "Puanlayici" => "🏅",
+                                "Sadik Izleyici" => "🎬",
+                                _ => "🏆"
+                            };
+                            <div class="badge-card">
+                                <div class="badge-left">
+                                    <div class="badge-icon">@icon</div>
+                                    <div>
+                                        <strong>@badge.Title</strong>
+                                        <div class="badge-meta">@badge.Description</div>
+                                    </div>
+                                </div>
+                                <span class="badge-pill">@earnedAt</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="profile-card">
+                <h3 class="profile-title">Kilitli Rozetler</h3>
+                @if (!Model.LockedBadges.Any())
+                {
+                    <div class="profile-muted">Tum rozetleri kazandin.</div>
+                }
+                else
+                {
+                    <div class="badge-list">
+                        @foreach (var badge in Model.LockedBadges)
+                        {
+                            var icon = badge.Title switch
+                            {
+                                "Ilk Bilet" => "🎟️",
+                                "Yorumcu" => "💬",
+                                "Elestirmen" => "📝",
+                                "Favorici" => "⭐",
+                                "Puanlayici" => "🏅",
+                                "Sadik Izleyici" => "🎬",
+                                _ => "🏆"
+                            };
+                            <div class="badge-card locked">
+                                <div class="badge-left">
+                                    <div class="badge-icon">@icon</div>
+                                    <div>
+                                        <strong>@badge.Title</strong>
+                                        <div class="badge-meta">@badge.Description</div>
+                                    </div>
+                                </div>
+                                <span class="badge-pill">@badge.RequirementText</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

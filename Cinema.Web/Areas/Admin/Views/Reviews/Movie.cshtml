@@ -1,0 +1,139 @@
+@model Cinema.Web.Areas.Admin.ViewModels.ReviewModerationVm
+@{
+    ViewData["Title"] = "Film Yorumlari";
+    var movieTitle = Model.MovieTitle ?? "";
+    var movieId = Model.MovieId;
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <div>
+            <h2>@(string.IsNullOrWhiteSpace(movieTitle) ? "Film Yorumlari" : movieTitle)</h2>
+            <div class="text-secondary">Tum yorumlar</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Reviews" asp-action="Moderation">Geri Don</a>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Reviews.Any())
+        {
+            <div class="admin-empty">Bu film icin yorum yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Kullanici</th>
+                            <th>Puan</th>
+                            <th>Durum</th>
+                            <th>Yorum</th>
+                            <th>Tarih</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Reviews)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId">
+                                    @item.DisplayName
+                                </a>
+                            </td>
+                            <td>@item.Rating / 5</td>
+                            <td>@(item.IsApproved ? "Onayli" : "Bekliyor")</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.Comment) ? "-" : item.Comment)</td>
+                            <td>@item.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    @if (!item.IsApproved)
+                                    {
+                                        <form method="post" asp-action="Approve" asp-route-id="@item.Id" asp-route-movieId="@movieId">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success">Onayla</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-action="Reject" asp-route-id="@item.Id" asp-route-movieId="@movieId">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Onayi Kaldir</button>
+                                        </form>
+                                    }
+                                    <form method="post" asp-action="Delete" asp-route-id="@item.Id" asp-route-movieId="@movieId"
+                                          onsubmit="return confirm('Bu yorumu silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="admin-panel mt-3">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Tum Yanitlar</h2>
+            <div class="text-secondary">Bu filme gelen yanitlar</div>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.AllReplies.Any())
+        {
+            <div class="admin-empty">Yanit yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Kullanici</th>
+                            <th>Yanit</th>
+                            <th>Durum</th>
+                            <th>Tarih</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var reply in Model.AllReplies)
+                    {
+                        var isPending = Model.PendingReplies.Any(p => p.Id == reply.Id);
+                        <tr>
+                            <td>@reply.DisplayName</td>
+                            <td>@reply.Comment</td>
+                            <td>@(isPending ? "Bekliyor" : "Onayli")</td>
+                            <td>@reply.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    @if (isPending)
+                                    {
+                                        <form method="post" asp-action="ReplyApprove" asp-route-id="@reply.Id" asp-route-movieId="@movieId">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success">Onayla</button>
+                                        </form>
+                                    }
+                                    <form method="post" asp-action="ReplyReject" asp-route-id="@reply.Id" asp-route-movieId="@movieId"
+                                          onsubmit="return confirm('Bu yaniti silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

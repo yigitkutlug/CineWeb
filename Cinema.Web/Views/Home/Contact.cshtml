@@ -1,0 +1,241 @@
+@* Iletisim sayfasi: statik bilgi + mesaj formu *@
+@model Cinema.Web.ViewModels.ContactFormVm
+@{
+    ViewData["Title"] = "İletişim";
+}
+
+<style>
+    .contact-page {
+        max-width: 1150px;
+        margin-inline: auto;
+        color: #eef2fb;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 1rem;
+    }
+
+    .contact-card {
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 8% 12%, rgba(212,162,76,.12), transparent 34%),
+            linear-gradient(145deg, rgba(13,16,24,.9), rgba(16,22,33,.86));
+        box-shadow: 0 18px 46px rgba(0,0,0,.2);
+        padding: 1.1rem;
+    }
+
+    .contact-card h1, .contact-card h2 {
+        margin: 0 0 .7rem;
+        font-weight: 800;
+    }
+
+    .contact-card p {
+        color: #c6cde1;
+        line-height: 1.6;
+    }
+
+    .contact-list {
+        display: grid;
+        gap: .75rem;
+        margin-top: 1rem;
+    }
+
+    .contact-item {
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03);
+        padding: .9rem;
+    }
+
+    .contact-item strong {
+        display: block;
+        color: #f1cb88;
+        margin-bottom: .2rem;
+    }
+
+    .contact-item span {
+        color: #d6ddec;
+    }
+
+    .contact-form .form-control,
+    .contact-form textarea {
+        background: rgba(255,255,255,.04);
+        border-color: rgba(255,255,255,.14);
+        color: #f2f6ff;
+        border-radius: 12px;
+    }
+
+    .contact-form .form-control:focus,
+    .contact-form textarea:focus {
+        background: rgba(255,255,255,.06);
+        border-color: rgba(212,162,76,.5);
+        color: #fff;
+        box-shadow: 0 0 0 .2rem rgba(212,162,76,.15);
+    }
+
+    .contact-form .form-control::placeholder,
+    .contact-form textarea::placeholder {
+        color: #aeb7cb;
+    }
+
+    .contact-form .btn-send {
+        border: 0;
+        border-radius: 12px;
+        padding: .75rem 1rem;
+        font-weight: 700;
+        color: #1b1206;
+        background: linear-gradient(135deg, #d4a24c, #e7c074);
+        box-shadow: 0 10px 22px rgba(212,162,76,.2);
+    }
+
+    .contact-map {
+        margin-top: 1rem;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 20% 30%, rgba(91,118,255,.14), transparent 40%),
+            radial-gradient(circle at 75% 70%, rgba(212,162,76,.14), transparent 42%),
+            linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+        min-height: 180px;
+        position: relative;
+    }
+
+    .contact-map::before {
+        content: "Sinema Konumu";
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #f4efe7;
+        font-weight: 700;
+        background: rgba(10,12,17,.55);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 999px;
+        padding: .3rem .65rem;
+        font-size: .85rem;
+        z-index: 1;
+    }
+
+    .contact-map::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+        background-size: 22px 22px;
+        opacity: .35;
+        pointer-events: none;
+    }
+
+    .contact-map iframe {
+        width: 100%;
+        min-height: 260px;
+        display: block;
+    }
+
+    .validation-note {
+        color: #ffb7b7;
+        font-size: .9rem;
+    }
+
+    @@media (max-width: 991px) {
+        .contact-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<section class="contact-page">
+    <div class="contact-grid">
+        <div class="contact-card">
+            <h1>İletişim</h1>
+            <p>
+                Sorularınız, destek talepleriniz veya iş birliği görüşmeleri için bizimle iletişime geçebilirsiniz.
+                En kısa sürede size dönüş sağlamaya çalışıyoruz.
+            </p>
+
+            <div class="contact-list">
+                <div class="contact-item">
+                    <strong>E-posta</strong>
+                    <span>destek@cinemasystem.local</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Telefon</strong>
+                    <span>+90 (212) 000 00 00</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Çalışma Saatleri</strong>
+                    <span>Hafta içi 10:00 - 22:00 / Hafta sonu 09:00 - 23:30</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Adres</strong>
+                    <span>Merkez Mah. Sinema Cad. No:12, İstanbul</span>
+                </div>
+            </div>
+
+            <div class="contact-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d192697.8885055022!2d28.847373053349944!3d41.00546324294015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caa7040068086b%3A0xe1ccfe98bc01b0d0!2zxLBzdGFuYnVs!5e0!3m2!1str!2str!4v1772443758284!5m2!1str!2str"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <h2>Bize Mesaj Gönder</h2>
+            <p class="mb-3">
+                Formu doldurduğunda sana otomatik bir teşekkür e-postası gönderiyoruz.
+            </p>
+
+            @if (Model.IsSubmitted)
+            {
+                <div class="alert alert-success">
+                    Mesajın için teşekkürler. Bildirimin alındı ve e-posta adresine onay gönderildi.
+                </div>
+            }
+            else if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+            {
+                <div asp-validation-summary="All" class="alert alert-danger validation-summary-valid"></div>
+            }
+
+            @* Form post'u Home/Contact action'ina gider; ModelState ile validation yapilir *@
+            <form method="post" asp-controller="Home" asp-action="Contact" class="contact-form">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label">Ad Soyad</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Adınızı ve soyadınızı girin" />
+                    <span asp-validation-for="FullName" class="validation-note"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">E-posta</label>
+                    <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
+                    <span asp-validation-for="Email" class="validation-note"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Subject" class="form-label">Konu</label>
+                    <input asp-for="Subject" class="form-control" placeholder="Destek, iş birliği, rezervasyon..." />
+                    <span asp-validation-for="Subject" class="validation-note"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Message" class="form-label">Mesaj</label>
+                    <textarea asp-for="Message" class="form-control" rows="5" placeholder="Mesajınızı yazın"></textarea>
+                    <span asp-validation-for="Message" class="validation-note"></span>
+                </div>
+
+                <button type="submit" class="btn-send w-100">Mesajı Gönder</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,205 @@
+@* Admin/SuperAdmin ortak dashboard: ozet sayilar ve hizli islem kartlari *@
+@model AdminDashboardVm
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="admin-stat-grid mb-3">
+    <div class="admin-stat-card">
+        <small>Toplam Film</small>
+        <strong>@Model.MovieCount</strong>
+    </div>
+    <div class="admin-stat-card">
+        <small>Toplam Seans</small>
+        <strong>@Model.ShowtimeCount</strong>
+    </div>
+    <div class="admin-stat-card">
+        <small>Toplam Oyuncu</small>
+        <strong>@Model.ActorCount</strong>
+    </div>
+    <div class="admin-stat-card">
+        <small>Toplam Uye</small>
+        <strong>@Model.UserCount</strong>
+    </div>
+    <div class="admin-stat-card accent">
+        <small>Toplam Satilan Bilet</small>
+        <strong>@Model.TicketCount</strong>
+    </div>
+</div>
+
+<div class="admin-panel mb-3">
+    <div class="admin-panel-header">
+        <h2>Son 7 Gun Satis</h2>
+    </div>
+    <div class="admin-panel-body">
+        @{
+            var maxSales = Model.Last7DaysSales.Any() ? Model.Last7DaysSales.Max(x => x.TicketCount) : 0;
+        }
+        <div class="dashboard-chart">
+            @foreach (var item in Model.Last7DaysSales)
+            {
+                var width = maxSales == 0 ? 0 : (int)Math.Round((double)item.TicketCount / maxSales * 100);
+                var label = DateTime.SpecifyKind(item.DayUtc, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM");
+                <div class="chart-row">
+                    <div class="text-secondary">@label</div>
+                    <div class="chart-bar"><span style="width:@width%"></span></div>
+                    <div class="text-secondary">@item.TicketCount bilet • @item.Revenue.ToString("0.00") TL</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid mb-3">
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>En Populer 5 Film</h2>
+        </div>
+        <div class="admin-panel-body">
+            @if (!Model.TopMovies.Any())
+            {
+                <div class="admin-empty">Henuz satis yok.</div>
+            }
+            else
+            {
+                <div class="dashboard-list">
+                    @foreach (var movie in Model.TopMovies)
+                    {
+                        <div class="dashboard-list-item">
+                            <div>
+                                <strong>@movie.MovieTitle</strong>
+                                <div class="meta">@movie.TicketCount bilet • @movie.Revenue.ToString("0.00") TL</div>
+                            </div>
+                            <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Movies" asp-action="Edit" asp-route-id="@movie.MovieId">Duzenle</a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>Salon Doluluk Oranlari</h2>
+        </div>
+        <div class="admin-panel-body">
+            @if (!Model.HallOccupancies.Any())
+            {
+                <div class="admin-empty">Salon bilgisi yok.</div>
+            }
+            else
+            {
+                <div class="dashboard-list">
+                    @foreach (var hall in Model.HallOccupancies)
+                    {
+                        <div class="dashboard-list-item">
+                            <div>
+                                <strong>@hall.HallName</strong>
+                                <div class="meta">@hall.SoldSeats / @(hall.TotalSeats * hall.TotalShowtimes) koltuk • @hall.TotalShowtimes seans</div>
+                            </div>
+                            <strong>@hall.OccupancyRate.ToString("0.0")%</strong>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="admin-panel mb-3">
+    <div class="admin-panel-header">
+        <h2>Hızlı İşlemler</h2>
+    </div>
+    <div class="admin-panel-body">
+        <div class="admin-quick-grid">
+            <a class="admin-quick-card" asp-area="Admin" asp-controller="Movies" asp-action="Index">
+                <strong>Filmleri Yönet</strong>
+                <p>Film ekle, duzenle ve sil.</p>
+            </a>
+
+            <a class="admin-quick-card" asp-area="Admin" asp-controller="Showtimes" asp-action="Index">
+                <strong>Seansları Gör</strong>
+                <p>Tum seanslari tek ekranda listele ve duzenle.</p>
+            </a>
+
+            <a class="admin-quick-card" asp-area="Admin" asp-controller="Actors" asp-action="Index">
+                <strong>Oyuncuları Yönet</strong>
+                <p>Oyuncu ekle, duzenle ve sil.</p>
+            </a>
+
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <a class="admin-quick-card" asp-area="Admin" asp-controller="Users" asp-action="Index">
+                    <strong>Üyeler ve Roller</strong>
+                    <p>Rol ata, e-posta/telefon bilgisini güncelle.</p>
+                </a>
+            }
+            else
+            {
+                <div class="admin-quick-card" style="cursor:default;">
+                    <strong>Üyeler ve Roller</strong>
+                    <p>Sadece SuperAdmin rol yonetimi yapabilir.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="admin-panel mb-3">
+    <div class="admin-panel-header">
+        <h2>Son Rezervasyonlar</h2>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.RecentTickets.Any())
+        {
+            <div class="admin-empty">Henuz bilet yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Bilet</th>
+                            <th>Kullanici</th>
+                            <th>Film</th>
+                            <th>Salon</th>
+                            <th>Koltuk</th>
+                            <th>Tutar</th>
+                            <th>Tarih</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var t in Model.RecentTickets)
+                    {
+                        var localTime = DateTime.SpecifyKind(t.PurchasedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm");
+                        <tr>
+                            <td>#@t.TicketId</td>
+                            <td>@t.UserDisplay</td>
+                            <td>@t.MovieTitle</td>
+                            <td>@t.HallName</td>
+                            <td>@t.SeatLabel</td>
+                            <td>@t.Price.ToString("0.00") TL</td>
+                            <td>@localTime</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <h3>Rol Politikası</h3>
+    </div>
+    <div class="admin-panel-body text-secondary-emphasis">
+        <p class="mb-2">
+            <strong>Admin</strong> ve <strong>SuperAdmin</strong> ayni dashboard, film ve oyuncu yonetim ekranlarini kullanir.
+        </p>
+        <p class="mb-0">
+            Tek fark: <strong>SuperAdmin</strong>, uye ve rol yonetimi ekranina erisebilir.
+        </p>
+    </div>
+</div>

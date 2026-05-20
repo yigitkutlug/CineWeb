@@ -1,0 +1,107 @@
+@* Admin film ekleme formu *@
+@model Cinema.Web.Areas.Admin.ViewModels.MovieFormVm
+@{
+    ViewData["Title"] = "Film Ekle";
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <h2>Yeni Film Ekle</h2>
+        <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Movies" asp-action="Index">Listeye Dön</a>
+    </div>
+    <div class="admin-panel-body">
+        <form method="post" enctype="multipart/form-data" class="admin-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="alert alert-danger validation-summary-valid py-2"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label admin-form-label">Film Adı</label>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DurationMinutes" class="form-label admin-form-label">Süre (dk)</label>
+                    <input asp-for="DurationMinutes" class="form-control" type="number" min="1" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Genre" class="form-label admin-form-label">Tür</label>
+                    <input asp-for="Genre" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label admin-form-label">Film Açıklaması</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Konusu, teması, oyuncu kadrosu notları..."></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label admin-form-label" for="posterFile">Film Kapağı</label>
+                    <input id="posterFile" name="posterFile" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp" />
+                    <div class="form-text text-light-emphasis">JPG, PNG veya WEBP formatında bir afiş yükleyebilirsin.</div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="SelectedActorIds" class="form-label admin-form-label">Oyuncular (Zorunlu)</label>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                        <input id="actor-search" class="admin-inline-search" type="search" placeholder="Oyuncu ara..." />
+                        <span id="actor-count" class="text-secondary small"></span>
+                    </div>
+                    <div id="actor-list" class="row g-2">
+                        @foreach (var actor in Model.ActorOptions)
+                        {
+                            <div class="col-md-4 col-lg-3 actor-item" data-actor="@actor.Text">
+                                <label class="form-check d-flex align-items-center gap-2 p-2 rounded border" style="border-color: rgba(255,255,255,.12) !important;">
+                                    <input class="form-check-input m-0"
+                                           type="checkbox"
+                                           name="SelectedActorIds"
+                                           value="@actor.Value"
+                                           @(Model.SelectedActorIds.Contains(int.Parse(actor.Value)) ? "checked" : null) />
+                                    <span class="form-check-label text-light m-0">@actor.Text</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="form-text text-light-emphasis">Birden fazla oyuncuyu tıklayarak seçebilirsin.</div>
+                    <span asp-validation-for="SelectedActorIds" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="IsFeatured" />
+                        <label class="form-check-label" asp-for="IsFeatured">Ana sayfada öne çıkan olarak işaretle</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-warning">Kaydet</button>
+                <a class="btn btn-outline-light" asp-area="Admin" asp-controller="Movies" asp-action="Index">İptal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var input = document.getElementById('actor-search');
+            var list = document.getElementById('actor-list');
+            var count = document.getElementById('actor-count');
+            if (!input || !list) return;
+
+            var items = Array.from(list.querySelectorAll('.actor-item'));
+            function update() {
+                var query = (input.value || '').trim().toLowerCase();
+                var visible = 0;
+                items.forEach(function (item) {
+                    var text = (item.getAttribute('data-actor') || '').toLowerCase();
+                    var match = !query || text.includes(query);
+                    item.style.display = match ? '' : 'none';
+                    if (match) visible++;
+                });
+                if (count) count.textContent = 'Gosterilen: ' + visible + '/' + items.length;
+            }
+
+            input.addEventListener('input', update);
+            update();
+        })();
+    </script>
+}
+
+

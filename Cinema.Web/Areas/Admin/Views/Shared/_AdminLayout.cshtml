@@ -1,0 +1,97 @@
+@* Admin/SuperAdmin ortak layout'u: sidebar, topbar ve panel alanlari burada *@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin</title>
+    <link rel="icon" type="image/png" href="~/media/logopng.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <a class="admin-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <img class="brand-logo" src="~/media/logopng.png" alt="Cinema Asya logo" />
+                <span>Cinema Asya Admin</span>
+            </a>
+
+            <div class="admin-sidebar-section">
+                <div class="admin-sidebar-title">Yönetim</div>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Movies" asp-action="Index">Filmler</a>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Showtimes" asp-action="Index">Seanslar</a>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Actors" asp-action="Index">Oyuncular</a>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Reviews" asp-action="Index">Yorum Onay</a>
+                <a class="admin-side-link" asp-area="Admin" asp-controller="Reviews" asp-action="Moderation">Yorum Moderasyon</a>
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                {
+                    <a class="admin-side-link" asp-area="Admin" asp-controller="Users" asp-action="Index">Üyeler ve Roller</a>
+                }
+            </div>
+
+            <div class="admin-sidebar-section mt-auto">
+                <div class="admin-sidebar-title">Siteye Don</div>
+                <a class="admin-side-link" asp-area="" asp-controller="Home" asp-action="Index">Public Anasayfa</a>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <h1 class="admin-page-title">@ViewData["Title"]</h1>
+                    <p class="admin-page-subtitle mb-0">
+                        @(User.IsInRole("SuperAdmin") ? "SuperAdmin oturumu" : "Admin oturumu")
+                    </p>
+                </div>
+                <div class="admin-topbar-actions">
+                    <input id="admin-search" class="admin-search" type="search" placeholder="Ara: film, oyuncu, yorum..." />
+                    <span class="admin-user-pill">@User.Identity?.Name</span>
+                    <a class="btn btn-sm btn-outline-light" asp-area="" asp-controller="Home" asp-action="Index">Site</a>
+                </div>
+            </header>
+
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+
+            <footer class="admin-footer">
+                <span>&copy; @DateTime.Now.Year CinemaSystem Admin</span>
+                <span>Admin ve SuperAdmin ayni paneli kullanir.</span>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var input = document.getElementById('admin-search');
+            if (!input) return;
+
+            function filterTables() {
+                var query = (input.value || '').trim().toLowerCase();
+                var tables = document.querySelectorAll('.admin-table tbody');
+                if (!tables.length) return;
+
+                tables.forEach(function (tbody) {
+                    var rows = tbody.querySelectorAll('tr');
+                    rows.forEach(function (row) {
+                        if (!query) {
+                            row.style.display = '';
+                            return;
+                        }
+                        var text = row.textContent || '';
+                        row.style.display = text.toLowerCase().includes(query) ? '' : 'none';
+                    });
+                });
+            }
+
+            input.addEventListener('input', filterTables);
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

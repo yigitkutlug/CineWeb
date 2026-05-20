@@ -1,0 +1,182 @@
+@* Hakkimizda sayfasi: platformun amaci ve yol haritasi *@
+@{
+    ViewData["Title"] = "Hakkımızda";
+}
+
+<style>
+    .info-page {
+        max-width: 1150px;
+        margin-inline: auto;
+        color: #eef2fb;
+    }
+
+    .info-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 12% 20%, rgba(212,162,76,.16), transparent 36%),
+            radial-gradient(circle at 90% 15%, rgba(91,118,255,.14), transparent 32%),
+            linear-gradient(145deg, rgba(13,16,24,.92), rgba(16,21,33,.88));
+        box-shadow: 0 20px 50px rgba(0,0,0,.2);
+        padding: 1.5rem;
+    }
+
+    .info-hero h1 {
+        margin: 0 0 .65rem;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    .info-hero p {
+        margin: 0;
+        color: #c5cde0;
+        max-width: 70ch;
+        line-height: 1.65;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1.15fr .85fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-card {
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03);
+        box-shadow: 0 12px 30px rgba(0,0,0,.14);
+        padding: 1rem;
+    }
+
+    .info-card h2 {
+        margin: 0 0 .65rem;
+        font-size: 1.1rem;
+        font-weight: 800;
+    }
+
+    .info-card p {
+        margin: 0 0 .75rem;
+        color: #c4ccdf;
+        line-height: 1.6;
+    }
+
+    .pill-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: .65rem;
+    }
+
+    .pill {
+        border-radius: 12px;
+        padding: .8rem;
+        border: 1px solid rgba(255,255,255,.08);
+        background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    }
+
+    .pill strong {
+        display: block;
+        color: #f4d79f;
+        margin-bottom: .25rem;
+    }
+
+    .pill span {
+        color: #c8d0e3;
+        font-size: .92rem;
+    }
+
+    .timeline {
+        display: grid;
+        gap: .75rem;
+    }
+
+    .timeline-item {
+        border-left: 2px solid rgba(212,162,76,.35);
+        padding-left: .8rem;
+    }
+
+    .timeline-item small {
+        color: #f0cb88;
+        display: block;
+        margin-bottom: .15rem;
+    }
+
+    .timeline-item p {
+        margin: 0;
+        color: #c4ccdf;
+        line-height: 1.5;
+    }
+
+    @@media (max-width: 991px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        .pill-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="info-page">
+    <div class="info-hero">
+        <h1>CinemaSystem Hakkında</h1>
+        <p>
+            CinemaSystem, sinema deneyimini sadece bilet satın alma ekranı olmaktan çıkarıp
+            kullanıcı profili, bilet geçmişi ve yönetim paneli ile tam bir sinema platformuna dönüştürmek için geliştiriliyor.
+            Hedefimiz; hızlı, güvenli ve keyifli bir deneyim sunmak.
+        </p>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h2>Ne Sunuyoruz?</h2>
+            <p>
+                Kullanıcılar için modern bir ana sayfa, profilim ve biletlerim ekranları; yöneticiler için film ve oyuncu yönetimi;
+                süper yöneticiler için üye ve rol yönetimi sunuyoruz. Tüm yapının temelinde temiz bir yetki ayrımı ve kolay kullanılabilir arayüz bulunuyor.
+            </p>
+            <div class="pill-grid">
+                <div class="pill">
+                    <strong>Kullanıcı Deneyimi</strong>
+                    <span>Profil, bilet geçmişi ve kolay giriş/kayıt akışı.</span>
+                </div>
+                <div class="pill">
+                    <strong>Yönetim Paneli</strong>
+                    <span>Film, oyuncu ve içerik yönetimi için hızlı ekranlar.</span>
+                </div>
+                <div class="pill">
+                    <strong>Rol Yönetimi</strong>
+                    <span>Süper yönetici için üye rolleri ve bilgi düzenleme yetkisi.</span>
+                </div>
+                <div class="pill">
+                    <strong>Genişleyebilir Mimari</strong>
+                    <span>Seans, koltuk ve satın alma akışları için hazır altyapı.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>Gelişim Yol Haritası</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <small>Aşama 1</small>
+                    <p>Kimlik doğrulama, roller ve yönetim paneli temel kurulumları tamamlandı.</p>
+                </div>
+                <div class="timeline-item">
+                    <small>Aşama 2</small>
+                    <p>Film ve oyuncu yönetimi eklendi; kullanıcı profili ve bilet geçmişi altyapısı hazırlandı.</p>
+                </div>
+                <div class="timeline-item">
+                    <small>Aşama 3</small>
+                    <p>Seans planlama, koltuk seçimi ve gerçek bilet satın alma modülü eklenecek.</p>
+                </div>
+                <div class="timeline-item">
+                    <small>Aşama 4</small>
+                    <p>Raporlama, kampanya yönetimi ve pano analitikleri ile sistem genişletilecek.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

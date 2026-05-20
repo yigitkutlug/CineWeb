@@ -1,0 +1,71 @@
+@model Cinema.Web.Areas.Admin.ViewModels.UsersIndexVm
+@{
+    ViewData["Title"] = "Üyeler ve Roller";
+    var canEdit = User.IsInRole("SuperAdmin");
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Üyeler</h2>
+            <div class="text-secondary">Toplam @Model.Items.Count kullanıcı</div>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Items.Any())
+        {
+            <div class="admin-empty">Henüz kullanıcı kaydı yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Ad Soyad</th>
+                            <th>Roller</th>
+                            <th>Telefon</th>
+                            <th>Şehir</th>
+                            <th class="text-end">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Items)
+                    {
+                        <tr>
+                            <td>@u.Email</td>
+                            <td>@(string.IsNullOrWhiteSpace(u.FullName) ? "-" : u.FullName)</td>
+                            <td>
+                                @if (u.Roles.Count == 0)
+                                {
+                                    <span class="badge text-bg-secondary">Kullanıcı</span>
+                                }
+                                else
+                                {
+                                    foreach (var role in u.Roles)
+                                    {
+                                        var badgeClass = role == "SuperAdmin" ? "text-bg-warning" : "text-bg-info";
+                                        <span class="badge @badgeClass">@role</span>
+                                    }
+                                }
+                            </td>
+                            <td>@(string.IsNullOrWhiteSpace(u.PhoneNumber) ? "-" : u.PhoneNumber)</td>
+                            <td>@(string.IsNullOrWhiteSpace(u.City) ? "-" : u.City)</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@u.Id">Detay</a>
+                                    @if (canEdit)
+                                    {
+                                        <a class="btn btn-sm btn-outline-warning" asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@u.Id">Düzenle</a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

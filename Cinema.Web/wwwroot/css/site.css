@@ -1,0 +1,429 @@
+html {
+  font-size: 14px;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 4%, rgba(212, 162, 76, .15), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(90, 118, 255, .14), transparent 32%),
+    radial-gradient(circle at 78% 72%, rgba(199, 91, 71, .10), transparent 28%),
+    linear-gradient(180deg, #0b0e14 0%, #0f131c 45%, #101521 100%);
+  color: #edf2ff;
+  font-family: "Segoe UI Variable", "Trebuchet MS", sans-serif;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Identity (Login/Register/Logout) sayfalarini ana sinema temasina yaklastir */
+body.identity-theme .cinema-main {
+  padding-top: 1.35rem;
+}
+
+body.identity-theme .container,
+body.identity-theme .container-fluid {
+  max-width: 1200px;
+}
+
+body.identity-theme main h1 {
+  color: #f4efe7;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin-bottom: .9rem;
+  text-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+body.identity-theme main h2,
+body.identity-theme main h3,
+body.identity-theme main p,
+body.identity-theme main label,
+body.identity-theme main .text-muted {
+  color: #d5dbe8 !important;
+}
+
+body.identity-theme main hr {
+  border-color: rgba(255,255,255,.12);
+  opacity: 1;
+}
+
+body.identity-theme main .row {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(212,162,76,.10), transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(84,110,255,.08), transparent 34%),
+    linear-gradient(180deg, rgba(16,20,29,.84), rgba(13,16,23,.82));
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow:
+    0 26px 60px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  border-radius: 22px;
+  padding: 1.15rem;
+  margin: 0;
+}
+
+body.identity-theme main .row::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.01) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+body.identity-theme main .col-md-4,
+body.identity-theme main .col-md-6,
+body.identity-theme main .col-md-8,
+body.identity-theme main [class*="col-"] {
+  color: #eef2fb;
+  position: relative;
+  z-index: 1;
+}
+
+body.identity-theme main .form-control,
+body.identity-theme main .form-select {
+  background: rgba(255,255,255,.035);
+  border-color: rgba(255,255,255,.16);
+  color: #f3f6ff;
+  border-radius: 12px;
+  min-height: 3.25rem;
+}
+
+body.identity-theme main .form-control::placeholder {
+  color: #aeb6ca;
+}
+
+body.identity-theme main .form-control:focus,
+body.identity-theme main .form-select:focus {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(212,162,76,.55);
+  color: #fff;
+  box-shadow: 0 0 0 .2rem rgba(212,162,76,.15);
+}
+
+body.identity-theme main .form-check-input {
+  background-color: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.2);
+}
+
+body.identity-theme main .btn,
+body.identity-theme main button.btn-primary {
+  border-radius: 12px;
+}
+
+body.identity-theme main .btn-primary {
+  color: #1c1307;
+  background: linear-gradient(135deg, #d4a24c, #e7c074);
+  border-color: #d4a24c;
+  font-weight: 700;
+  box-shadow: 0 12px 24px rgba(212,162,76,.22);
+}
+
+body.identity-theme main .btn-primary:hover,
+body.identity-theme main .btn-primary:focus {
+  color: #1b1206;
+  background: linear-gradient(135deg, #e0b15d, #f0cc86);
+  border-color: #e0b15d;
+}
+
+body.identity-theme main a {
+  color: #f1c977;
+}
+
+body.identity-theme main a:hover {
+  color: #ffe2a5;
+}
+
+body.identity-theme main .text-danger,
+body.identity-theme main .validation-summary-errors {
+  color: #ffb4b4 !important;
+}
+
+body.identity-theme main .validation-summary-errors ul {
+  margin-bottom: .5rem;
+}
+
+.validation-summary-valid {
+  display: none;
+}
+
+body.identity-theme main .btn-outline-primary,
+body.identity-theme main .btn-outline-secondary {
+  border-radius: 12px;
+}
+
+body.identity-theme main .text-dark {
+  color: #edf2ff !important;
+}
+
+body.identity-theme main .text-secondary,
+body.identity-theme main .text-secondary-emphasis {
+  color: #bcc5db !important;
+}
+
+/* Chrome autofill - Identity form alanlari */
+body.identity-theme main .form-control:-webkit-autofill,
+body.identity-theme main .form-control:-webkit-autofill:hover,
+body.identity-theme main .form-control:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f3f6ff;
+  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.04) inset;
+  box-shadow: 0 0 0 1000px rgba(255,255,255,.04) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+@media (max-width: 991px) {
+  body.identity-theme main .row {
+    padding: .9rem;
+  }
+}
+
+/* =========================================================
+   Global Public Layout Overrides (navbar/footer high contrast)
+   Scoped CSS bazen partial/Identity tarafinda yeterli gelmedigi icin
+   kritik gorunum burada global olarak zorlanir.
+   ========================================================= */
+
+.cinema-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: 12px 12px 14px;
+  margin-bottom: 1.5rem;
+}
+
+.cinema-nav {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(212, 162, 76, .14), transparent 34%),
+    radial-gradient(circle at 88% 50%, rgba(91, 118, 255, .12), transparent 36%),
+    linear-gradient(135deg, rgba(10, 13, 19, .95), rgba(14, 18, 27, .92)) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter: blur(16px);
+}
+
+.cinema-nav .container-xl {
+  min-height: 58px;
+}
+
+.cinema-nav .navbar-brand.cinema-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  color: #f6f1e8 !important;
+  font-weight: 800;
+  letter-spacing: .01em;
+  font-size: 1.2rem;
+}
+
+.cinema-nav .navbar-brand.cinema-brand:hover {
+  color: #ffffff !important;
+}
+
+.cinema-nav .navbar-nav .nav-link {
+  color: #dce3f3 !important;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: .5rem .8rem !important;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.cinema-nav .navbar-nav .nav-link:hover,
+.cinema-nav .navbar-nav .nav-link:focus {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.07);
+  transform: translateY(-1px);
+}
+
+.cinema-nav .navbar-nav .nav-link.nav-link-accent {
+  color: #f3d293 !important;
+}
+
+.cinema-nav .navbar-nav .nav-link.nav-link-accent:hover,
+.cinema-nav .navbar-nav .nav-link.nav-link-accent:focus {
+  color: #fff3d6 !important;
+  background: rgba(212,162,76,.14);
+}
+
+.cinema-auth .navbar-nav {
+  gap: .35rem;
+}
+
+.cinema-auth .navbar-nav .nav-link {
+  color: #edf2ff !important;
+  border-radius: 10px;
+}
+
+.cinema-auth .navbar-nav .nav-item:last-child .nav-link {
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.03);
+}
+
+.cinema-auth .btn-link.nav-link {
+  text-decoration: none;
+}
+
+.cinema-toggler {
+  border-color: rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.03) !important;
+}
+
+.cinema-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(240,244,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.cinema-main {
+  min-height: 68vh;
+  padding-top: 2.2rem;
+  padding-bottom: 2rem;
+}
+
+.cinema-footer {
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.cinema-footer > .container-xl {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(212,162,76,.16), transparent 38%),
+    radial-gradient(circle at 84% 12%, rgba(91,118,255,.12), transparent 34%),
+    radial-gradient(circle at 92% 88%, rgba(199,91,71,.11), transparent 36%),
+    linear-gradient(145deg, #0c1018, #111827 42%, #101420) !important;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+  box-shadow: 0 24px 56px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.04);
+  padding: 1.2rem 1.15rem .95rem;
+}
+
+.cinema-footer > .container-xl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: .35;
+}
+
+.cinema-footer-grid,
+.cinema-footer-bottom {
+  position: relative;
+  z-index: 1;
+}
+
+.cinema-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  color: #f6f1e8 !important;
+  font-weight: 800;
+}
+
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(212,162,76,.25));
+}
+
+.cinema-footer-title {
+  color: #f0cb88 !important;
+  font-weight: 700;
+}
+
+.cinema-footer-text {
+  color: #bcc5da !important;
+}
+
+.cinema-footer-list a {
+  color: #dce3f3 !important;
+  text-decoration: none;
+}
+
+.cinema-footer-list a:hover {
+  color: #fff !important;
+}
+
+.cinema-footer-bottom {
+  color: #a2aec7 !important;
+  border-top: 1px solid rgba(255,255,255,.08);
+  margin-top: .95rem;
+  padding-top: .8rem;
+}
+
+@media (max-width: 991px) {
+  .cinema-nav .navbar-collapse {
+    margin-top: .65rem;
+    padding-top: .55rem;
+    border-top: 1px solid rgba(255,255,255,.07);
+  }
+
+  .cinema-nav .navbar-nav {
+    gap: .2rem;
+  }
+
+  .cinema-auth {
+    margin-top: .35rem;
+  }
+
+  .cinema-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .cinema-header {
+    padding-inline: 8px;
+  }
+
+  .cinema-nav {
+    border-radius: 16px !important;
+  }
+
+  .cinema-footer > .container-xl {
+    border-radius: 16px;
+    padding: 1rem .9rem .85rem;
+  }
+
+  .cinema-footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

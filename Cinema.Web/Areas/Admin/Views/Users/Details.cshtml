@@ -1,0 +1,210 @@
+@model Cinema.Web.Areas.Admin.ViewModels.UserDetailsVm
+@{
+    ViewData["Title"] = "Üye Detayı";
+    var roles = new List<string>();
+    if (Model.IsSuperAdmin)
+        roles.Add("SuperAdmin");
+    if (Model.IsAdmin)
+        roles.Add("Admin");
+    var hasTickets = Model.Tickets.Any();
+    var hasReviews = Model.Reviews.Any();
+    var canEditTickets = User.IsInRole("SuperAdmin");
+    var canManageReviews = User.IsInRole("Admin") || User.IsInRole("SuperAdmin");
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Üye Detayı</h2>
+            <div class="text-secondary">Salt okunur görünüm</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Users" asp-action="Index">Listeye Dön</a>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <a class="btn btn-sm btn-outline-warning" asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">Düzenle</a>
+            }
+        </div>
+    </div>
+
+    <div class="admin-panel-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label admin-form-label">Email</label>
+                <div class="form-control-plaintext text-light">@Model.Email</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label admin-form-label">Telefon</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.PhoneNumber)) ? "-" : Model.PhoneNumber)</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label admin-form-label">Ad</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.FirstName)) ? "-" : Model.FirstName)</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label admin-form-label">Soyad</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.LastName)) ? "-" : Model.LastName)</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label admin-form-label">Şehir</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.City)) ? "-" : Model.City)</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label admin-form-label">Adres</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.Address)) ? "-" : Model.Address)</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label admin-form-label">Profil Fotoğrafı</label>
+                <div class="form-control-plaintext text-light">@((string.IsNullOrWhiteSpace(Model.ProfilePhotoPath)) ? "-" : Model.ProfilePhotoPath)</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label admin-form-label">Roller</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    @if (roles.Count == 0)
+                    {
+                        <span class="badge text-bg-secondary">Kullanıcı</span>
+                    }
+                    else
+                    {
+                        foreach (var role in roles)
+                        {
+                            var badgeClass = role == "SuperAdmin" ? "text-bg-warning" : "text-bg-info";
+                            <span class="badge @badgeClass">@role</span>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="admin-panel mt-4">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Biletler</h2>
+            <div class="text-secondary">Toplam @Model.Tickets.Count bilet</div>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!hasTickets)
+        {
+            <div class="admin-empty">Bu kullanıcı için bilet bulunamadı.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Seans</th>
+                            <th>Salon</th>
+                            <th>Koltuk</th>
+                            <th>Fiyat</th>
+                            <th>Satın Alma</th>
+                            @if (canEditTickets)
+                            {
+                                <th class="text-end">İşlem</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var t in Model.Tickets)
+                    {
+                        var seans = t.StartsAtUtc.HasValue
+                            ? DateTime.SpecifyKind(t.StartsAtUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                            : "-";
+                        var purchased = DateTime.SpecifyKind(t.PurchasedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm");
+                        var canCancel = canEditTickets && t.StartsAtUtc.HasValue && t.StartsAtUtc.Value > DateTime.UtcNow;
+                        <tr>
+                            <td>@(string.IsNullOrWhiteSpace(t.MovieTitle) ? "-" : t.MovieTitle)</td>
+                            <td>@seans</td>
+                            <td>@(string.IsNullOrWhiteSpace(t.HallName) ? "-" : t.HallName)</td>
+                            <td>@(string.IsNullOrWhiteSpace(t.SeatLabel) ? "-" : t.SeatLabel)</td>
+                            <td>@t.Price.ToString("0.00") TL</td>
+                            <td>@purchased</td>
+                            @if (canEditTickets)
+                            {
+                                <td class="text-end">
+                                    @if (canCancel)
+                                    {
+                                        <form method="post" asp-area="Admin" asp-controller="Users" asp-action="CancelTicket"
+                                              asp-route-id="@t.TicketId" asp-route-userId="@Model.Id"
+                                              onsubmit="return confirm('Bu bileti iptal etmek istiyor musunuz?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Bileti İptal Et</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary">Geçmiş</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="admin-panel mt-4">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Yorumlar</h2>
+            <div class="text-secondary">Toplam @Model.Reviews.Count yorum</div>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!hasReviews)
+        {
+            <div class="admin-empty">Bu kullanici icin yorum bulunamadi.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Puan</th>
+                            <th>Durum</th>
+                            <th>Yorum</th>
+                            <th>Tarih</th>
+                            @if (canManageReviews)
+                            {
+                                <th class="text-end">Islem</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var r in Model.Reviews)
+                    {
+                        var created = DateTime.SpecifyKind(r.CreatedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm");
+                        <tr>
+                            <td>@(string.IsNullOrWhiteSpace(r.MovieTitle) ? "-" : r.MovieTitle)</td>
+                            <td>@r.Rating / 5</td>
+                            <td>@(r.IsApproved ? "Onayli" : "Bekliyor")</td>
+                            <td>@(string.IsNullOrWhiteSpace(r.Comment) ? "-" : r.Comment)</td>
+                            <td>@created</td>
+                            @if (canManageReviews)
+                            {
+                                <td class="text-end">
+                                    <form method="post" asp-area="Admin" asp-controller="Reviews" asp-action="Delete"
+                                          asp-route-id="@r.ReviewId" asp-route-movieId="@r.MovieId"
+                                          onsubmit="return confirm('Bu yorumu silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

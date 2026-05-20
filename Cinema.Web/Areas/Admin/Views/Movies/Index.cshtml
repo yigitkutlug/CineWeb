@@ -1,0 +1,73 @@
+@* Admin film listesi: film CRUD + seans yonetimi giris noktasi *@
+@model List<Cinema.Application.AdminMovies.AdminMovieListDto>
+@{
+    ViewData["Title"] = "Filmler";
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <h2>Film Listesi</h2>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-warning" asp-area="Admin" asp-controller="Showtimes" asp-action="Index">Tüm Seanslar</a>
+            <a class="btn btn-sm btn-warning" asp-area="Admin" asp-controller="Movies" asp-action="Create">Yeni Film Ekle</a>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Any())
+        {
+            <div class="admin-empty">Henuz film kaydi yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Baslik</th>
+                            <th>Tur</th>
+                            <th>Sure (dk)</th>
+                            <th>Oyuncu</th>
+                            <th>One Cikan</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.Genre) ? "-" : item.Genre)</td>
+                            <td>@item.DurationMinutes</td>
+                            <td>@item.ActorCount</td>
+                            <td>
+                                @if (item.IsFeatured)
+                                {
+                                    <span class="badge text-bg-warning">Evet</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-secondary">Hayir</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-light"
+                                       asp-area="Admin" asp-controller="Movies" asp-action="Edit" asp-route-id="@item.Id">Duzenle</a>
+                                    <a class="btn btn-sm btn-outline-warning"
+                                       asp-area="Admin" asp-controller="Showtimes" asp-action="Index" asp-route-movieId="@item.Id">Seanslar</a>
+
+                                    <form method="post" asp-area="Admin" asp-controller="Movies" asp-action="Delete" asp-route-id="@item.Id"
+                                          onsubmit="return confirm('Bu filmi silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

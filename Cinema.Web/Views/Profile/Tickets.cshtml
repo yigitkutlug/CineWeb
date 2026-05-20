@@ -1,0 +1,152 @@
+@* "Biletlerim" ekrani: kullanicinin satin alma gecmisi burada listelenir *@
+@model List<Cinema.Web.ViewModels.TicketHistoryItemVm>
+@{
+    ViewData["Title"] = "Biletlerim";
+}
+
+<style>
+    .tickets-shell {
+        max-width: 1100px;
+        margin-inline: auto;
+        color: #edf2ff;
+    }
+    .tickets-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .tickets-header h1 {
+        margin: 0 0 .35rem;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 800;
+    }
+    .tickets-header p {
+        margin: 0;
+        color: #aeb8cf;
+    }
+    .tickets-card {
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 12% 15%, rgba(212,162,76,.10), transparent 34%),
+            radial-gradient(circle at 88% 20%, rgba(91,118,255,.10), transparent 34%),
+            linear-gradient(145deg, rgba(12,15,22,.92), rgba(16,22,33,.86));
+        box-shadow: 0 18px 42px rgba(0,0,0,.22);
+        padding: 1rem;
+    }
+    .tickets-table {
+        margin-bottom: 0;
+        color: #edf2ff;
+        --bs-table-bg: transparent;
+        --bs-table-color: #edf2ff;
+        --bs-table-border-color: rgba(255,255,255,.08);
+        --bs-table-striped-bg: rgba(255,255,255,.02);
+        --bs-table-striped-color: #edf2ff;
+        --bs-table-hover-bg: rgba(255,255,255,.04);
+        --bs-table-hover-color: #ffffff;
+    }
+    .tickets-table thead th {
+        color: #c8d2e8;
+        border-bottom-color: rgba(255,255,255,.1);
+        background: transparent !important;
+        white-space: nowrap;
+        font-weight: 700;
+    }
+    .tickets-table td,
+    .tickets-table th {
+        border-color: rgba(255,255,255,.08);
+        background: transparent !important;
+        vertical-align: middle;
+    }
+    .tickets-table tbody tr:hover td {
+        background: rgba(255,255,255,.03) !important;
+    }
+    .ticket-film {
+        font-weight: 700;
+        color: #f8fbff;
+    }
+    .ticket-seat {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: .3rem .7rem;
+        background: rgba(212,162,76,.14);
+        border: 1px solid rgba(212,162,76,.28);
+        color: #ffe1a5;
+        font-weight: 700;
+    }
+    .ticket-muted {
+        color: #aeb8cf;
+    }
+    .tickets-empty {
+        border-radius: 18px;
+        border: 1px dashed rgba(255,255,255,.12);
+        padding: 1rem;
+        color: #aeb8cf;
+        background: rgba(255,255,255,.02);
+    }
+    @@media (max-width: 767px) {
+        .tickets-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+
+<div class="tickets-shell">
+    <div class="tickets-header">
+        <div>
+            <h1>Biletlerim</h1>
+            <p>Satın aldığın ve izlediğin filmleri burada görebilirsin.</p>
+        </div>
+        <a class="btn btn-outline-light" asp-controller="Profile" asp-action="Index">Profilim</a>
+    </div>
+
+    <div class="tickets-card">
+        @if (!Model.Any())
+        {
+            <div class="tickets-empty">
+                Henuz bilet kaydin yok. Ileride satin aldigin filmler burada listelenecek.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table tickets-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Koltuk</th>
+                            <th>Seans</th>
+                            <th>Satın Alma</th>
+                            <th>Ucret</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ticket-film">@item.MovieTitle</td>
+                            <td>
+                                @if (string.IsNullOrWhiteSpace(item.SeatNo))
+                                {
+                                    <span class="ticket-muted">-</span>
+                                }
+                                else
+                                {
+                                    <span class="ticket-seat">@item.SeatNo</span>
+                                }
+                            </td>
+                            <td>@(item.SessionAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td>@item.PurchasedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@item.Price.ToString("0.00") TL</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

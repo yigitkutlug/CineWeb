@@ -1,0 +1,277 @@
+@* Koltuk secim ekrani: musait/dolu koltuklar gorsel plan uzerinde secilir. *@
+@model Cinema.Application.Movies.SeatSelectionDto
+@{
+    ViewData["Title"] = $"Koltuk Seç - {Model.Movie.Title}";
+    var groupedRows = Model.Seats.GroupBy(s => s.RowLabel).OrderBy(g => g.Key).ToList();
+}
+
+<style>
+    .seat-page { max-width: 1220px; margin-inline: auto; color: #edf2ff; }
+    .seat-header, .seat-map-card, .seat-legend-card {
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,.08);
+        background:
+            radial-gradient(circle at 12% 15%, rgba(212,162,76,.10), transparent 34%),
+            radial-gradient(circle at 88% 20%, rgba(91,118,255,.10), transparent 34%),
+            linear-gradient(145deg, rgba(12,15,22,.92), rgba(16,22,33,.86));
+        box-shadow: 0 18px 42px rgba(0,0,0,.22);
+    }
+    .seat-header { padding: 1rem; margin-bottom: 1rem; }
+    .seat-header h1 { margin: 0 0 .35rem; font-size: 1.35rem; font-weight: 800; }
+    .seat-header p { margin: 0; color: #c5cee2; }
+    .seat-grid-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1rem; }
+    .seat-map-card { padding: 1rem; }
+    .screen-bar {
+        text-align: center;
+        border-radius: 999px;
+        margin: 0 auto 1rem;
+        max-width: 420px;
+        padding: .55rem .75rem;
+        background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+        border: 1px solid rgba(255,255,255,.10);
+        color: #f5f1e8;
+        font-weight: 700;
+        letter-spacing: .04em;
+    }
+    .rows-wrap { display: grid; gap: .45rem; }
+    .seat-row {
+        display: grid;
+        grid-template-columns: 28px 1fr 28px;
+        align-items: center;
+        gap: .5rem;
+    }
+    .row-label {
+        color: #d8dff1;
+        font-weight: 700;
+        text-align: center;
+    }
+    .seats {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: .35rem;
+    }
+    .seat-btn {
+        min-width: 32px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(255,255,255,.05);
+        color: #e9eef9;
+        font-weight: 700;
+        font-size: .82rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        padding: 0 .35rem;
+    }
+    .seat-btn.available:hover {
+        background: rgba(212,162,76,.16);
+        border-color: rgba(212,162,76,.35);
+        color: #ffe5b0;
+    }
+    .seat-btn.selected-demo {
+        background: rgba(91,118,255,.16);
+        border-color: rgba(91,118,255,.32);
+        color: #cfe0ff;
+    }
+    .seat-btn.taken {
+        background: rgba(255,255,255,.02);
+        border-color: rgba(255,255,255,.08);
+        color: #6f7a94;
+        cursor: not-allowed;
+        opacity: .75;
+    }
+    .seat-btn.aisle-after {
+        margin-right: 1rem;
+    }
+    .seat-legend-card { padding: 1rem; height: fit-content; }
+    .legend-list { display: grid; gap: .6rem; margin-top: .8rem; }
+    .legend-item { display:flex; align-items:center; gap:.55rem; color:#c8d0e3; }
+    .legend-swatch { width: 20px; height: 20px; border-radius: 6px; border:1px solid rgba(255,255,255,.12); }
+    .legend-swatch.available { background: rgba(255,255,255,.05); }
+    .legend-swatch.taken { background: rgba(255,255,255,.02); opacity: .75; }
+    .legend-swatch.pick { background: rgba(212,162,76,.16); border-color: rgba(212,162,76,.35); }
+    .buy-seat-form { margin-top: 1rem; display: grid; gap: .75rem; }
+    .buy-seat-form .btn-purchase {
+        border: 0;
+        border-radius: 12px;
+        padding: .8rem .95rem;
+        color: #1c1307;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d4a24c, #e8c37b);
+        box-shadow: 0 10px 20px rgba(212,162,76,.18);
+    }
+    .selected-seat-pill {
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.03);
+        color: #edf2ff;
+        border-radius: 12px;
+        padding: .65rem .75rem;
+    }
+    .selected-seat-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .4rem;
+    }
+    .selected-seat-chip {
+        border-radius: 999px;
+        padding: .3rem .65rem;
+        background: rgba(91,118,255,.16);
+        border: 1px solid rgba(91,118,255,.32);
+        color: #d9e4ff;
+        font-size: .85rem;
+        font-weight: 700;
+    }
+    @@media (max-width: 991px) {
+        .seat-grid-layout { grid-template-columns: 1fr; }
+        .seat-row { grid-template-columns: 24px 1fr 24px; gap: .25rem; }
+        .seat-btn { min-width: 28px; height: 28px; font-size: .78rem; }
+        .seat-btn.aisle-after { margin-right: .55rem; }
+    }
+</style>
+
+<section class="seat-page">
+    <div class="seat-header">
+        <h1>@Model.Movie.Title - Koltuk Seçimi</h1>
+        <p>
+            @DateTime.SpecifyKind(Model.Showtime.StartsAt, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+            • @Model.Hall.Name • @Model.Showtime.Price.ToString("0.00") TL
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <div class="seat-grid-layout">
+        @* Koltuk haritasi: dolu/uygun koltuklar burada cizilir *@
+        <div class="seat-map-card">
+            <div class="screen-bar">PERDE</div>
+
+            <div class="rows-wrap">
+                @foreach (var row in groupedRows)
+                {
+                    <div class="seat-row">
+                        <div class="row-label">@row.Key</div>
+                        <div class="seats">
+                            @foreach (var seat in row)
+                            {
+                                var seatNo = $"{seat.RowLabel}{seat.SeatNumber}";
+                                var isTaken = Model.ReservedSeatIds.Contains(seat.Id);
+                                var css = $"seat-btn {(isTaken ? "taken" : "available")} {(seat.IsAisleAfter ? "aisle-after" : "")}";
+
+                                if (isTaken)
+                                {
+                                    <span class="@css" title="@seatNo (Dolu)">@seat.SeatNumber</span>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="@css"
+                                            data-seat-id="@seat.Id"
+                                            data-seat-label="@seatNo"
+                                            title="@seatNo">@seat.SeatNumber</button>
+                                }
+                            }
+                        </div>
+                        <div class="row-label">@row.Key</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <aside class="seat-legend-card">
+            <h2 class="h5 mb-2">Bilet Ozeti</h2>
+            <div class="text-secondary mb-2">@Model.Movie.Title</div>
+            <div class="text-secondary mb-2">@Model.Hall.Name</div>
+            <div class="text-secondary">@DateTime.SpecifyKind(Model.Showtime.StartsAt, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")</div>
+
+            <div class="legend-list">
+                <div class="legend-item"><span class="legend-swatch available"></span> Müsait koltuk</div>
+                <div class="legend-item"><span class="legend-swatch taken"></span> Dolu koltuk</div>
+                <div class="legend-item"><span class="legend-swatch pick"></span> Seçilebilir (birden fazla tıkla)</div>
+            </div>
+
+            <form method="post" asp-controller="Movies" asp-action="BuySeat" class="buy-seat-form" id="buySeatForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="showtimeId" value="@Model.Showtime.Id" />
+                <div id="selectedSeatInputs"></div>
+
+                <div class="selected-seat-pill" id="selectedSeatText">Koltuk seçmedin</div>
+                <div class="selected-seat-list" id="selectedSeatList"></div>
+                <button type="submit" class="btn-purchase" id="buyBtn" disabled>@Model.Showtime.Price.ToString("0.00") TL • Satın Al</button>
+            </form>
+
+            <a class="btn btn-outline-light w-100 mt-2"
+               asp-controller="Movies"
+               asp-action="Details"
+               asp-route-id="@Model.Movie.Id">Filme Dön</a>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    @* JS: koltuk secimlerini tutar, toplam fiyati ve hidden inputlari gunceller *@
+    <script>
+        (() => {
+            const seatButtons = document.querySelectorAll('.seat-btn.available');
+            const selectedSeatInputs = document.getElementById('selectedSeatInputs');
+            const selectedSeatText = document.getElementById('selectedSeatText');
+            const selectedSeatList = document.getElementById('selectedSeatList');
+            const buyBtn = document.getElementById('buyBtn');
+            const seatPrice = @Model.Showtime.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            const selectedSeats = new Map();
+
+            function renderSelection() {
+                selectedSeatInputs.innerHTML = '';
+                selectedSeatList.innerHTML = '';
+
+                const seats = Array.from(selectedSeats.values());
+                if (!seats.length) {
+                    selectedSeatText.textContent = 'Koltuk seçmedin';
+                    buyBtn.textContent = `${seatPrice.toFixed(2)} TL • Satın Al`;
+                    buyBtn.disabled = true;
+                    return;
+                }
+
+                seats.forEach(seat => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'seatIds';
+                    input.value = seat.id;
+                    selectedSeatInputs.appendChild(input);
+
+                    const chip = document.createElement('span');
+                    chip.className = 'selected-seat-chip';
+                    chip.textContent = seat.label;
+                    selectedSeatList.appendChild(chip);
+                });
+
+                const totalPrice = seatPrice * seats.length;
+                selectedSeatText.textContent = `Seçilen ${seats.length} koltuk: ${seats.map(x => x.label).join(', ')}`;
+                buyBtn.textContent = `${totalPrice.toFixed(2)} TL • ${seats.length} Bilet Satın Al`;
+                buyBtn.disabled = false;
+            }
+
+            seatButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const seatId = btn.dataset.seatId;
+                    const seatLabel = btn.dataset.seatLabel;
+
+                    if (selectedSeats.has(seatId)) {
+                        selectedSeats.delete(seatId);
+                        btn.classList.remove('selected-demo');
+                    } else {
+                        selectedSeats.set(seatId, { id: seatId, label: seatLabel });
+                        btn.classList.add('selected-demo');
+                    }
+
+                    renderSelection();
+                });
+            });
+        })();
+    </script>
+}

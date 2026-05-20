@@ -1,0 +1,301 @@
+/* Premium public layout theme: navbar + footer + ambient surface */
+
+.cinema-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: .9rem .75rem 0;
+}
+
+.cinema-nav {
+  position: relative;
+  border-radius: 22px;
+  padding-block: .15rem;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
+    linear-gradient(135deg, rgba(15,17,24,.92), rgba(11,13,19,.90));
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, .28),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(18px);
+}
+
+.cinema-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(212,162,76,.12), transparent 42%),
+    radial-gradient(circle at 88% 35%, rgba(92,130,255,.08), transparent 38%);
+}
+
+.cinema-brand {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 800;
+  color: #f7f2ea;
+  letter-spacing: .01em;
+  font-family: "Trebuchet MS", "Segoe UI Variable", "Segoe UI", sans-serif;
+  font-size: 1.15rem;
+}
+
+.cinema-brand:hover { color: #fff; }
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, #ffd993, #d69a38 65%, #915710);
+  box-shadow: 0 0 18px rgba(212, 162, 76, .7);
+  flex-shrink: 0;
+}
+
+.cinema-toggler {
+  border-color: rgba(255, 255, 255, .14);
+  background: rgba(255, 255, 255, .03);
+}
+
+.cinema-toggler:focus {
+  box-shadow: 0 0 0 .2rem rgba(212, 162, 76, .2);
+}
+
+.cinema-nav-links {
+  position: relative;
+  z-index: 1;
+  gap: .18rem;
+}
+
+.cinema-nav-links .nav-link {
+  color: #cfd6ea;
+  border-radius: 12px;
+  padding: .6rem .85rem;
+  font-weight: 600;
+  font-size: .95rem;
+  transition: color .2s ease, background-color .2s ease, transform .2s ease;
+}
+
+.cinema-nav-links .nav-link:hover,
+.cinema-nav-links .nav-link:focus {
+  color: #fff;
+  background: rgba(255, 255, 255, .06);
+  transform: translateY(-1px);
+}
+
+.cinema-nav-links .nav-link-accent {
+  color: #f4d79f;
+}
+
+.cinema-nav-links .nav-link-accent:hover,
+.cinema-nav-links .nav-link-accent:focus {
+  color: #fff4da;
+  background: rgba(212, 162, 76, .14);
+}
+
+.cinema-auth {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  margin-top: .2rem;
+}
+
+.cinema-auth .navbar-nav {
+  align-items: center;
+  gap: .35rem;
+}
+
+.cinema-auth .nav-link {
+  color: #eef2fb !important;
+  border-radius: 12px;
+  padding: .52rem .78rem !important;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.cinema-auth .nav-link:hover,
+.cinema-auth .nav-link:focus {
+  color: #fff !important;
+  background: rgba(255,255,255,.06);
+}
+
+.cinema-auth .btn-link.nav-link {
+  text-decoration: none;
+}
+
+.cinema-auth .nav-item:last-child .nav-link {
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.03);
+}
+
+.cinema-main {
+  min-height: 66vh;
+  padding-top: 1.25rem;
+  padding-bottom: 1.8rem;
+}
+
+.cinema-footer {
+  margin-top: 2rem;
+  padding: 0 0 1rem;
+}
+
+.cinema-footer > .container-xl {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(212,162,76,.14), transparent 38%),
+    radial-gradient(circle at 84% 18%, rgba(88,115,255,.10), transparent 35%),
+    radial-gradient(circle at 92% 85%, rgba(255,107,74,.10), transparent 42%),
+    linear-gradient(145deg, #0d1017, #121726 45%, #10141f);
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, .26),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  padding: 1.35rem 1.2rem .95rem;
+}
+
+.cinema-footer > .container-xl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: .35;
+}
+
+.cinema-footer-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.cinema-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-weight: 800;
+  color: #f5f0e7;
+  margin-bottom: .6rem;
+}
+
+.cinema-footer-title {
+  color: #f0cb88;
+  margin: .1rem 0 .55rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+.cinema-footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: .45rem;
+}
+
+.cinema-footer-list a {
+  color: #d9dff0;
+  text-decoration: none;
+}
+
+.cinema-footer-list a:hover { color: #fff; }
+
+.cinema-footer-text {
+  margin: 0 0 .45rem;
+  color: #bac2d5;
+  line-height: 1.5;
+}
+
+.cinema-footer-bottom {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  padding-top: .85rem;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  color: #99a5c2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: .92rem;
+}
+
+.cinema-bg-orb {
+  position: fixed;
+  z-index: -2;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 999px;
+  filter: blur(52px);
+  opacity: .22;
+  pointer-events: none;
+}
+
+.cinema-bg-orb-1 {
+  top: -8rem;
+  left: -8rem;
+  background: #d4a24c;
+}
+
+.cinema-bg-orb-2 {
+  top: 16rem;
+  right: -10rem;
+  background: #5b76ff;
+}
+
+@media (max-width: 991px) {
+  .cinema-nav {
+    border-radius: 18px;
+  }
+
+  .cinema-nav-links {
+    margin-top: .65rem;
+    padding-top: .45rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  .cinema-auth {
+    margin-top: .55rem;
+    padding-top: .45rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  .cinema-auth .navbar-nav {
+    align-items: flex-start;
+  }
+
+  .cinema-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cinema-footer-bottom {
+    flex-direction: column;
+    gap: .3rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .cinema-header {
+    padding-inline: .5rem;
+  }
+
+  .cinema-footer > .container-xl {
+    border-radius: 18px;
+    padding: 1rem .9rem .85rem;
+  }
+
+  .cinema-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

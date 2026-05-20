@@ -1,0 +1,69 @@
+@model List<Cinema.Application.Reviews.ReviewModerationMovieDto>
+@{
+    ViewData["Title"] = "Yorum Moderasyon";
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Yorum Moderasyon</h2>
+            <div class="text-secondary">Film bazinda yorum goruntuleme ve duzenleme</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Reviews" asp-action="Index">Yorum Onay</a>
+        </div>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Any())
+        {
+            <div class="admin-empty">Yorum bulunan film yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Toplam Yorum</th>
+                            <th>Onayli</th>
+                            <th>Bekleyen</th>
+                            <th>Toplam Yanit</th>
+                            <th>Bekleyen Yanit</th>
+                            <th>Son Yorum</th>
+                            <th>Son Yanit</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var lastReview = item.LastReviewAtUtc.HasValue
+                            ? DateTime.SpecifyKind(item.LastReviewAtUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                            : "-";
+                        var lastReply = item.LastReplyAtUtc.HasValue
+                            ? DateTime.SpecifyKind(item.LastReplyAtUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                            : "-";
+                        <tr>
+                            <td>@item.MovieTitle</td>
+                            <td>@item.TotalCount</td>
+                            <td>@item.ApprovedCount</td>
+                            <td>@item.PendingCount</td>
+                            <td>@item.ReplyCount</td>
+                            <td>@item.PendingReplyCount</td>
+                            <td>@lastReview</td>
+                            <td>@lastReply</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-light" asp-area="Admin" asp-controller="Reviews" asp-action="Movie" asp-route-id="@item.MovieId">Yorumlari Gor</a>
+                                    <a class="btn btn-sm btn-outline-warning" asp-area="Admin" asp-controller="Movies" asp-action="Edit" asp-route-id="@item.MovieId">Filmi Duzenle</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,68 @@
+@* Admin oyuncu listesi ve CRUD aksiyonlari *@
+@model Cinema.Web.Areas.Admin.ViewModels.ActorListVm
+@{
+    ViewData["Title"] = "Oyuncular";
+}
+
+<div class="admin-panel">
+    <div class="admin-panel-header">
+        <h2>Oyuncu Listesi</h2>
+        <a class="btn btn-sm btn-warning" asp-area="Admin" asp-controller="Actors" asp-action="Create">Yeni Oyuncu Ekle</a>
+    </div>
+    <div class="admin-panel-body">
+        @if (!Model.Items.Any())
+        {
+            <div class="admin-empty">Henuz oyuncu kaydi yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Ad Soyad</th>
+                            <th>Yas</th>
+                            <th>Uyruk</th>
+                            <th>Dogum Tarihi</th>
+                            <th class="text-end">Islem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.PhotoPath))
+                                {
+                                    <img src="@item.PhotoPath" alt="@item.FullName"
+                                         style="width:44px;height:44px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.12);" />
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-secondary">Yok</span>
+                                }
+                            </td>
+                            <td>@item.FullName</td>
+                            <td>@(item.Age?.ToString() ?? "-")</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.Nationality) ? "-" : item.Nationality)</td>
+                            <td>@(item.BirthDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-light"
+                                       asp-area="Admin" asp-controller="Actors" asp-action="Edit" asp-route-id="@item.Id">Duzenle</a>
+                                    <form method="post" asp-area="Admin" asp-controller="Actors" asp-action="Delete" asp-route-id="@item.Id"
+                                          onsubmit="return confirm('Bu oyuncuyu silmek istiyor musunuz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
