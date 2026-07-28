@@ -1,37 +1,37 @@
 # 🎬 CineWeb
 
-A comprehensive cinema management and online ticket reservation system built with **ASP.NET Core MVC**, **ASP.NET Core Web API**, and **PostgreSQL**.
+**ASP.NET Core MVC**, **ASP.NET Core Web API** ve **PostgreSQL** kullanılarak geliştirilmiş kapsamlı bir sinema yönetim ve online bilet rezervasyon sistemidir.
 
 ---
 
-## 🚀 About the Project
+## 🚀 Proje Hakkında
 
-CineWeb is a full-featured cinema management system developed using **ASP.NET Core MVC**, **ASP.NET Core Web API**, and **PostgreSQL**. The application allows users to browse movies currently in theaters, view movie details, select showtimes and seats, securely purchase tickets, and manage their profiles. The system also includes a comprehensive administration panel for managing movies, halls, showtimes, users, and roles.
+CineWeb, kullanıcıların vizyondaki filmleri görüntüleyebilmesini, film detaylarını inceleyebilmesini, seans ve koltuk seçimi yaparak güvenli bir şekilde bilet satın alabilmesini sağlayan kapsamlı bir sinema otomasyon sistemidir.
 
-The project follows a **Layered Architecture** and was developed with a focus on scalability, maintainability, security, and performance.
+Proje kapsamında ayrıca film, salon, seans, kullanıcı ve rol yönetiminin gerçekleştirilebildiği kapsamlı bir yönetim paneli geliştirilmiştir. Uygulama **Katmanlı Mimari (Layered Architecture)** kullanılarak geliştirilmiş olup ölçeklenebilirlik, sürdürülebilirlik, performans ve güvenlik ön planda tutulmuştur.
 
 ---
 
-## ✨ Features
+## ✨ Özellikler
 
-- 🎬 Browse movies currently in theaters
-- 📄 Movie detail pages
-- 🎟️ Online ticket purchasing
-- 💺 Seat selection and reservation
-- 👤 User registration and authentication
+- 🎬 Vizyondaki filmleri listeleme
+- 📄 Film detay sayfaları
+- 🎟️ Online bilet satın alma
+- 💺 Koltuk seçimi ve rezervasyon
+- 👤 Kullanıcı kayıt ve giriş sistemi
 - 🔐 JWT Authentication
-- 🛡️ ASP.NET Identity integration
-- 📧 Automatic ticket delivery via email
-- ⭐ Movie review and rating system
-- ❤️ Review likes and replies
-- 🏆 Badge & achievement system
-- 🛠️ Administration panel
-- 🎥 Movie, hall and showtime management
-- 👥 User & role management
+- 🛡️ ASP.NET Identity ile kullanıcı yönetimi
+- 📧 Satın alınan biletin e-posta olarak gönderilmesi
+- ⭐ Film yorum ve puanlama sistemi
+- ❤️ Yorum beğeni ve cevap sistemi
+- 🏆 Rozet (Badge) sistemi
+- 🛠️ Yönetim Paneli
+- 🎥 Film, salon ve seans yönetimi
+- 👥 Kullanıcı ve rol yönetimi
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Kullanılan Teknolojiler
 
 - ASP.NET Core MVC
 - ASP.NET Core Web API
@@ -49,162 +49,164 @@ The project follows a **Layered Architecture** and was developed with a focus on
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Mimari
 
-- Layered Architecture
+- Katmanlı Mimari (Layered Architecture)
 - Repository Pattern
 - REST API
 - Entity Framework Core
 - Dependency Injection
-- Role-Based Authorization
+- Role Tabanlı Yetkilendirme
 
 ---
 
-## 📦 Main Modules
+## 📦 Temel Modüller
 
-### 👤 User
+### 👤 Kullanıcı
 
-- User Registration
-- User Login
-- Profile Management
+- Kayıt Ol
+- Giriş Yap
+- Profil Yönetimi
 
-### 🎬 Cinema
+### 🎬 Sinema
 
-- Movie Listing
-- Movie Details
-- Showtimes
-- Halls
-- Seat Reservation
+- Film Listeleme
+- Film Detay Sayfası
+- Seans Yönetimi
+- Salon Yönetimi
+- Koltuk Rezervasyonu
 
-### 🎟️ Ticketing
+### 🎟️ Bilet İşlemleri
 
-- Online Ticket Purchase
-- Email Ticket Delivery
+- Online Bilet Satın Alma
+- E-Posta ile Bilet Gönderimi
 
-### ⭐ Social Features
+### ⭐ Sosyal Özellikler
 
-- Movie Reviews
-- Review Replies
-- Like System
-- Badge System
+- Film Yorumları
+- Yorum Cevapları
+- Beğeni Sistemi
+- Rozet Sistemi
 
-### 🛠️ Administration
+### 🛠️ Yönetim Paneli
 
-- Movie Management
-- Hall Management
-- Showtime Management
-- User Management
-- Role Management
+- Film Yönetimi
+- Salon Yönetimi
+- Seans Yönetimi
+- Kullanıcı Yönetimi
+- Rol Yönetimi
 
 ---
 
-## 🔐 Security
+## 🔐 Güvenlik
 
 - JWT Authentication
 - ASP.NET Identity
-- Role-Based Authorization
+- Role Tabanlı Yetkilendirme
 - Model Validation
-- Entity Framework Constraints
-- Unique Indexes
-- Secure Password Hashing
+- Entity Framework Constraint Yapıları
+- Unique Index Kullanımı
+- Güvenli Şifre Hashleme
 
 ---
 
-# 📸 Screenshots
+# 📸 Uygulama Görselleri
 
-## 🏠 Home Page
+## 🏠 Ana Sayfa
 
 ![Home Page](screenshots/home-page.png)
 
 ---
 
-## 🎬 Movie Details
+## 🎬 Film Detay Sayfası
 
 ![Movie Details](screenshots/movie-details.png)
 
 ---
 
-## 💺 Seat Selection
+## 💺 Koltuk Seçimi
 
 ![Seat Selection](screenshots/seat-selection.png)
 
 ---
 
-## ✅ Purchase Successful
+## ✅ Satın Alma Başarılı
 
 ![Purchase Successful](screenshots/purchase-success.png)
 
 ---
 
-## 🔑 Login
+## 🔑 Giriş Sayfası
 
 ![Login](screenshots/login.png)
 
 ---
 
-## 📝 Register
+## 📝 Kayıt Sayfası
 
 ![Register](screenshots/register.png)
 
 ---
 
-## 👤 User Profile
+## 👤 Profil Sayfası
 
 ![User Profile](screenshots/profile.png)
 
 ---
 
-## 🏆 Badge System
+## 🏆 Rozet Sistemi
 
 ![Badge System](screenshots/badge-system.png)
 
 ---
 
-## 📧 Ticket Email
+## 📧 E-Posta ile Bilet Gönderimi
 
 ![Ticket Email](screenshots/ticket-email.png)
 
 ---
 
-## 🛠️ Admin Dashboard
+## 🛠️ Yönetim Paneli
 
 ![Admin Dashboard](screenshots/admin-dashboard.png)
 
 ---
 
-## 🎬 Movie Management
+## 🎬 Film Yönetimi
 
 ![Movie Management](screenshots/admin-movies.png)
 
 ---
 
-## 📅 Showtime Management
+## 📅 Seans Yönetimi
 
 ![Showtime Management](screenshots/admin-showtimes.png)
 
 ---
 
-## 🏢 Hall Management
+## 🏢 Salon Yönetimi
 
 ![Hall Management](screenshots/admin-halls.png)
 
 ---
 
-## 👥 User Management
+## 👥 Kullanıcı Yönetimi
 
 ![User Management](screenshots/admin-users.png)
 
 ---
 
-## 🔐 Role Management
+## 🔐 Rol Yönetimi
 
 ![Role Management](screenshots/admin-roles.png)
 
 ---
 
-## 📊 Database
+## 📊 Veritabanı
 
-The application uses **PostgreSQL** with **Entity Framework Core** and includes relational tables such as:
+Projede **PostgreSQL** veritabanı kullanılmış olup ilişkisel yapı **Entity Framework Core** ile yönetilmektedir.
+
+Temel tablolar:
 
 - Movies
 - Showtimes
@@ -215,32 +217,32 @@ The application uses **PostgreSQL** with **Entity Framework Core** and includes 
 - Reviews
 - Badges
 
-Database schema management is handled through **Entity Framework Core Migrations**.
+Veritabanı değişiklikleri **Entity Framework Core Migration** yapısı ile yönetilmektedir.
 
 ---
 
-## 🚀 Future Improvements
+## 🚀 Gelecekte Eklenebilecek Özellikler
 
-- 💳 Online Payment Integration
-- 📱 QR Code Ticket Verification
-- ⚡ SignalR Real-Time Seat Updates
-- ❤️ Favorite Movies
-- 🔔 Notification System
-- 🌍 Multi-language Support
-- 🐳 Docker Deployment
+- 💳 Online Ödeme Sistemi
+- 📱 QR Kod ile Bilet Doğrulama
+- ⚡ SignalR ile Gerçek Zamanlı Koltuk Güncellemeleri
+- ❤️ Favori Filmler
+- 🔔 Bildirim Sistemi
+- 🌍 Çoklu Dil Desteği
+- 🐳 Docker Desteği
 
 ---
 
-## 👨‍💻 Developer
+## 👨‍💻 Geliştirici
 
 **Yiğit Kutluğ**
 
-Computer Engineer
+Bilgisayar Mühendisi
 
 GitHub: https://github.com/yigitkutlug
 
 ---
 
-## 📄 License
+## 📄 Lisans
 
-This project was developed for educational and portfolio purposes.
+Bu proje eğitim, öğrenme ve kişisel portföy amacıyla geliştirilmiştir.
