@@ -1,79 +1,115 @@
-🎬 CineWeb
+# 🎬 CineWeb
 
-Modern web teknolojileri kullanılarak geliştirilen, sinema bileti rezervasyonu ve yönetim süreçlerini dijital ortama taşıyan kapsamlı bir sinema otomasyon sistemi.
+A comprehensive cinema management and online ticket reservation system built with **ASP.NET Core MVC**, **ASP.NET Core Web API**, and **PostgreSQL**.
 
-🚀 Proje Hakkında
+---
 
-CineWeb, ASP.NET Core MVC, ASP.NET Core Web API ve PostgreSQL kullanılarak geliştirilen tam kapsamlı bir sinema yönetim sistemidir. Proje; kullanıcıların vizyondaki filmleri görüntüleyebilmesini, seans seçebilmesini, koltuk rezervasyonu yapabilmesini ve güvenli şekilde bilet satın alabilmesini sağlar. Yönetici tarafında ise film, salon, seans, kullanıcı ve içerik yönetimi yapılabilmektedir. Uygulama katmanlı mimari kullanılarak geliştirilmiş olup güvenlik, performans ve sürdürülebilirlik ön planda tutulmuştur.
+## 🚀 About the Project
 
-✨ Özellikler
-🎬 Film listeleme ve detay sayfaları
-🎟️ Online bilet satın alma sistemi
-💺 Gerçek zamanlı koltuk seçimi
-👤 Kullanıcı kayıt ve giriş sistemi
-🔐 JWT Authentication
-🛡️ ASP.NET Identity ile rol yönetimi
-📧 SMTP ile e-posta gönderimi
-⭐ Film yorumları ve puanlama sistemi
-❤️ Beğeni ve yorum cevapları
-🏆 Rozet (Badge) sistemi
-🛠️ Admin Paneli
-🎥 Film, salon ve seans yönetimi
-👥 Kullanıcı ve rol yönetimi
-🛠️ Kullanılan Teknolojiler
-ASP.NET Core MVC
-ASP.NET Core Web API
-C#
-Entity Framework Core
-PostgreSQL
-ASP.NET Identity
-JWT Authentication
-SMTP Mail
-HTML5
-CSS3
-JavaScript
-Bootstrap
-DBeaver
-🏗️ Mimari
-Katmanlı Mimari (Layered Architecture)
-Repository Pattern
-Entity Framework Core
-REST API
-Role Based Authorization
-Dependency Injection
-📦 Temel Modüller
-Kullanıcı
-Kayıt Ol
-Giriş Yap
-Profil Yönetimi
-Sinema
-Film Listeleme
-Film Detayları
-Seanslar
-Salonlar
-Koltuk Rezervasyonu
-Bilet
-Online Satın Alma
-E-posta ile Bilet Gönderimi
-Sosyal Özellikler
-Film Yorumları
-Yorum Cevapları
-Beğeni Sistemi
-Badge Sistemi
-Yönetim Paneli
-Film Yönetimi
-Seans Yönetimi
-Salon Yönetimi
-Kullanıcı Yönetimi
-Rol Yönetimi
-🔐 Güvenlik
-JWT Authentication
-ASP.NET Identity
-Role Based Authorization
-Veri Doğrulama (Validation)
-Entity Framework Constraints
-Unique Index Yapıları
-📸 Uygulama Görselleri
+CineWeb is a full-featured cinema management system developed using **ASP.NET Core MVC**, **ASP.NET Core Web API**, and **PostgreSQL**. The application allows users to browse movies currently in theaters, view movie details, select showtimes and seats, securely purchase tickets, and manage their profiles. The system also includes a comprehensive administration panel for managing movies, halls, showtimes, users, and roles.
+
+The project follows a **Layered Architecture** and was developed with a focus on scalability, maintainability, security, and performance.
+
+---
+
+## ✨ Features
+
+- 🎬 Browse movies currently in theaters
+- 📄 Movie detail pages
+- 🎟️ Online ticket purchasing
+- 💺 Seat selection and reservation
+- 👤 User registration and authentication
+- 🔐 JWT Authentication
+- 🛡️ ASP.NET Identity integration
+- 📧 Automatic ticket delivery via email
+- ⭐ Movie review and rating system
+- ❤️ Review likes and replies
+- 🏆 Badge & achievement system
+- 🛠️ Administration panel
+- 🎥 Movie, hall and showtime management
+- 👥 User & role management
+
+---
+
+## 🛠️ Technologies Used
+
+- ASP.NET Core MVC
+- ASP.NET Core Web API
+- C#
+- Entity Framework Core
+- PostgreSQL
+- ASP.NET Identity
+- JWT Authentication
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap
+- SMTP Mail
+- DBeaver
+
+---
+
+## 🏗️ Architecture
+
+- Layered Architecture
+- Repository Pattern
+- REST API
+- Entity Framework Core
+- Dependency Injection
+- Role-Based Authorization
+
+---
+
+## 📦 Main Modules
+
+### 👤 User
+
+- User Registration
+- User Login
+- Profile Management
+
+### 🎬 Cinema
+
+- Movie Listing
+- Movie Details
+- Showtimes
+- Halls
+- Seat Reservation
+
+### 🎟️ Ticketing
+
+- Online Ticket Purchase
+- Email Ticket Delivery
+
+### ⭐ Social Features
+
+- Movie Reviews
+- Review Replies
+- Like System
+- Badge System
+
+### 🛠️ Administration
+
+- Movie Management
+- Hall Management
+- Showtime Management
+- User Management
+- Role Management
+
+---
+
+## 🔐 Security
+
+- JWT Authentication
+- ASP.NET Identity
+- Role-Based Authorization
+- Model Validation
+- Entity Framework Constraints
+- Unique Indexes
+- Secure Password Hashing
+
+---
+
 # 📸 Screenshots
 
 ## 🏠 Home Page
@@ -163,38 +199,48 @@ Unique Index Yapıları
 ## 🔐 Role Management
 
 ![Role Management](screenshots/admin-roles.png)
-📊 Veritabanı
 
-PostgreSQL kullanılarak geliştirilen veritabanında;
+---
 
-Movies
-Showtimes
-Halls
-Seats
-Tickets
-Users
-Reviews
-Badges
+## 📊 Database
 
-tabloları arasında ilişkisel yapı kurulmuştur. Entity Framework Core Migration yapısı kullanılmıştır.
+The application uses **PostgreSQL** with **Entity Framework Core** and includes relational tables such as:
 
-🚀 Gelecekte Eklenebilecek Özellikler
-Online ödeme sistemi
-QR Kod ile bilet doğrulama
-SignalR ile canlı koltuk güncelleme
-Favori filmler
-Bildirim sistemi
-Çoklu dil desteği
-Docker Deployment
-👨‍💻 Geliştirici
+- Movies
+- Showtimes
+- Halls
+- Seats
+- Tickets
+- Users
+- Reviews
+- Badges
 
-Yiğit Kutluğ
+Database schema management is handled through **Entity Framework Core Migrations**.
+
+---
+
+## 🚀 Future Improvements
+
+- 💳 Online Payment Integration
+- 📱 QR Code Ticket Verification
+- ⚡ SignalR Real-Time Seat Updates
+- ❤️ Favorite Movies
+- 🔔 Notification System
+- 🌍 Multi-language Support
+- 🐳 Docker Deployment
+
+---
+
+## 👨‍💻 Developer
+
+**Yiğit Kutluğ**
 
 Computer Engineer
 
-GitHub:
-https://github.com/yigitkutlug
+GitHub: https://github.com/yigitkutlug
 
-📄 Lisans
+---
 
-Bu proje eğitim ve portföy amacıyla geliştirilmiştir.
+## 📄 License
+
+This project was developed for educational and portfolio purposes.
