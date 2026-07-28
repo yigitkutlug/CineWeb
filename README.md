@@ -88,21 +88,9 @@ Unique Index Yapıları
 
 ---
 
-## 🕒 Showtimes
-
-![Showtimes](screenshots/showtimes.png)
-
----
-
 ## 💺 Seat Selection
 
 ![Seat Selection](screenshots/seat-selection.png)
-
----
-
-## 🎟️ Ticket Purchase
-
-![Ticket Purchase](screenshots/ticket-purchase.png)
 
 ---
 
@@ -130,15 +118,15 @@ Unique Index Yapıları
 
 ---
 
-## ⭐ Review System
-
-![Review System](screenshots/review-system.png)
-
----
-
 ## 🏆 Badge System
 
 ![Badge System](screenshots/badge-system.png)
+
+---
+
+## 📧 Ticket Email
+
+![Ticket Email](screenshots/ticket-email.png)
 
 ---
 
@@ -160,6 +148,12 @@ Unique Index Yapıları
 
 ---
 
+## 🏢 Hall Management
+
+![Hall Management](screenshots/admin-halls.png)
+
+---
+
 ## 👥 User Management
 
 ![User Management](screenshots/admin-users.png)
@@ -169,19 +163,6 @@ Unique Index Yapıları
 ## 🔐 Role Management
 
 ![Role Management](screenshots/admin-roles.png)
-
----
-
-## 🗄️ Database ER Diagram
-
-![Database ER Diagram](screenshots/er-diagram.png)
-
----
-
-## 📧 Ticket Email
-
-![Ticket Email](screenshots/ticket-email.png)
-
 📊 Veritabanı
 
 PostgreSQL kullanılarak geliştirilen veritabanında;
